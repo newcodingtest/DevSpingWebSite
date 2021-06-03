@@ -47,6 +47,36 @@ create table attach(
 alter table attach add constraint pk_attach primary key(uuid);
 alter table attach add constraint fk_attach foreign key(bno) references board(bno);
 
+create table G_board(
+bno number(10,0),
+title varchar2(200) not null,
+content varchar2(2000) not null,
+writer varchar2(50) not null,
+regdate date default sysdate,
+updatedate date default sysdate,
+replycnt number default 0,
+visit number(10,0) default 0,
+recomend number default 0
+)
+
+alter table G_board add primary key (bno);
+
+Create sequence Gboard_sequence
+increment by 1
+start with 1;
+
+create table G_attach(
+    uuid varchar2(100) not null,
+    uploadPath varchar2(200) not null,
+    fileName varchar2(100) not null,
+    fileType char(1) default  'I',
+    bno number(10,0)
+);
+
+alter table G_attach add constraint G_pk_attach primary key(uuid);
+alter table G_attach add constraint G_fk_attach foreign key(bno) references G_board(bno);
+
+
 create table member(
     userid varchar2(50) not null primary key,
     userpw varchar2(100) not null,
@@ -73,3 +103,12 @@ create table persistent_logins(
 Create sequence member_sequence
 increment by 1
 start with 1;
+
+insert into member(mno, userid, userpw) values(member_sequence.nextval,'user00','pw00');
+insert into member(mno, userid, userpw) values(member_sequence.nextval,'member00','pw00');
+insert into member(mno, userid, userpw) values(member_sequence.nextval,'admin00','pw00');
+
+insert into member_auth(userid, auth) values('user00','ROLE_USER');
+insert into member_auth(userid, auth) values('member00','ROLE_MANAGER');
+insert into member_auth(userid, auth) values('admin00','ROLE_MANAGER');
+insert into member_auth(userid, auth) values('admin00','ROLE_ADMIN');
