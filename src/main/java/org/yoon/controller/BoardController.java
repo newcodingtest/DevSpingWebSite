@@ -77,9 +77,10 @@ public class BoardController {
 	}
 	
 	//글 등록 페이지로 이동
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/register")
 	public void register() {
-	
+		log.info("글 등록페이지로 이동");
 		}
 
 	//글 등록
