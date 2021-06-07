@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="customAccessDenied" class="org.yoon.security.CustomAccessDeniedHandler" />
+<bean id="customLoginSuccess" class="org.yoon.security.CustomLoginSuccessHandler" />
+<bean id="customUserDetailsService" class="org.yoon.security.CustomUserDetailsService" />
+<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+<security:http>
+	<security:form-login login-page="/member/customLogin" />
+	<security:access-denied-handler ref="customAccessDenied" />
+	<!-- remember-me 체크박스 선택하면 로그인 기억 기능 -->
+	<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800" />
+	<!-- 로그아웃 처리와 LogoutSuccessHandler post 방식으로만 작동함  로그아웃시 자동로그인쿠기,was 발행 쿠기 삭제-->
+	<security:logout logout-url="/member/customLogout"
+	invalidate-session="true" delete-cookies="remember-me, JSESSION_ID" />
+</security:http>
+
+
+<!-- authentication-manager:사용자의 인증처리 -->
+<security:authentication-manager>
+	<security:authentication-provider user-service-ref="customUserDetailsService">
+		<security:password-encoder ref="bcryptPasswordEncoder "/>
+	</security:authentication-provider>
+</security:authentication-manager>
+
+</beans>
