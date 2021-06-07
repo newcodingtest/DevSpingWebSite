@@ -1,5 +1,5 @@
 create table board(
-bno number(10,0),
+bno number(10,0), 
 title varchar2(200) not null,
 content varchar2(2000) not null,
 writer varchar2(50) not null,
