@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +38,7 @@ public class ReplyController {
 	@PostMapping(value = "/new",
 			consumes = "application/json",
 			produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> create(@RequestBody ReplyVO vo){
+	public ResponseEntity<String> create(@RequestBody ReplyVO vo, Model model){
 		
 		log.info("ReplyVO:  "+vo);
 		
@@ -72,9 +73,9 @@ public class ReplyController {
 	}
 	
 	//¥Ò±€ªË¡¶
-	@DeleteMapping(value = "/{rno}",
-				   produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> remove(@PathVariable("rno") Long rno){
+	@PreAuthorize("principal.username == #vo.replayer")
+	@DeleteMapping(value = "/{rno}")
+	public ResponseEntity<String> remove(@RequestBody ReplyVO vo, @PathVariable("rno") Long rno){
 		log.info("get: " + rno);
 		
 		return service.remove(rno) ==1 
