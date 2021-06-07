@@ -380,9 +380,9 @@ var replyChat = $(".chat");
 			 }
 			 for(var i=0, len=list.length||0; i<len; i++){
 				 str +=" <li id='rnoid' class='left claerfix' data-rno='"+list[i].rno+"'>";
-				 str +="  <div><div class='header'><strong class='primary-font'>"+list[i].replayer+"</strong>";
+				 str +="  <div><div id='replyID'><strong class='primary-font' id='span_id'>"+list[i].replayer+"</strong>";
 				 str +="   <small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
-				 str +="    <p id='Rereply'>"+list[i].reply+"</p><button id='Replyremove' type='button' data-rno='"+list[i].rno+"'>삭제</button></div></li>";
+				 str +="    <p id='Rereply'>"+list[i].reply+"</p><button id='Replyremove' type='button' data-rno='"+list[i].rno+"' data-id='"+list[i].replayer+"'>삭제</button></div></li>";
 			 }
 			 replyChat.html(str);
 			 
@@ -400,10 +400,24 @@ var replyChat = $(".chat");
 	var	Replyremove=$("#Replyremove"); //댓글 삭제버튼
 	var Rereply=$("#Rereply"); //
 	var modal = $(".modal");
+
 	
 	//csrf 토큰값===========================================================================
 	var csrfHeaderName = "${_csrf.headerName}";
 	var csrfTokenValue = "${_csrf.token}";
+	
+	
+    var loginUser = null;
+   
+//로그인 시큐리티    
+   <sec:authorize access="isAuthenticated()">
+    
+    var loginUser = '<sec:authentication property="principal.username"/>';   
+    
+</sec:authorize>
+	
+	
+	
 	
 	//jquery로 자동으로 토큰 값 전송====================================================================
 	$(document).ajaxSend(function(e,xhr,options){
@@ -427,25 +441,28 @@ var replyChat = $(".chat");
 	//댓글 삭제===============================================================================	 
 	replyChat.on("click", "button", function(e){
 		var rno=$(this).attr("data-rno");
+		var rly=$(this).attr("data-id");
 		console.log(rno);
-		console.log(replayer);
 		
-		if(!replayer){
-			alert("로그인 후 삭제가 가능합니다.");
+		console.log("현재 로그인 한 사람: "+loginUser);
+		console.log("댓글 원래 작성자: "+rly);
+		
+		if(!loginUser){
+			alert("로그인후 삭제가 가능합니다.");
 			return;
 		}
 		
-		if(replayer != rmdReplayer){
-			alert("작성자만 댓글 삭제가 가능합니다");
-			return;
+		if(loginUser != rly){
+			alert("자신이 작성한 댓글만 삭제가 가능합니다.");
+			return
 		}
 		
-		replyService.remove(rno, rmdReplyayer function(result){
+		replyService.remove(rno, rly, function(result){
 			alert("삭제 완료");
 			//showList(1);
-			showList(-1);
+			showList(pageNum);
 		});
-		location.reload();
+	
 	});
 
 	
