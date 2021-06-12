@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-06-12T05:49:32.157Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36" etag="Fdicof_5twndNKykiAs_" version="14.7.7" type="github">
+<mxfile host="app.diagrams.net" modified="2021-06-12T06:00:11.360Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36" etag="1Iz9ra9B5gBdm_3VPEiu" version="14.7.7" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="3061" dy="1346" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="4782" dy="1884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -366,7 +366,7 @@
             <mxRectangle x="230" y="140" width="160" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-125" value="-getFolder(): String&#xa;&#xa;-checkImageType(File file): boolean&#xa;&#xa;+uploadAjaxPost(MultipartFile[] uploadFile): ResponseEntity&lt;List&lt;AttachFileDTO&gt;&gt;&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-118">
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-125" value="-getFolder(): String&#xa;&#xa;-checkImageType(File file): boolean&#xa;&#xa;+uploadAjaxPost(MultipartFile[] uploadFile): ResponseEntity&lt;List&lt;AttachFileDTO&gt;&gt;&#xa;&#xa;+getFileImage(String fileName): ResponseEntity&lt;byte[]&gt;&#xa;&#xa;+downloadFile(String userAgent, String fileName): ResponseEntity&lt;Resource&gt;&#xa;&#xa;+deleteFile(String fileName, String type): ResponseEntity&lt;String&gt;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-118">
           <mxGeometry y="40" width="460" height="156" as="geometry" />
         </mxCell>
         <mxCell id="lY5_7pqnY-cAQmy3Fjwy-126" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
@@ -379,6 +379,60 @@
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1224.17" y="950" as="sourcePoint" />
             <mxPoint x="1224" y="1270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-128" value="AttachFileDTO" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="560" y="360" width="290" height="170" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-129" value="-uuid: String&#xa;&#xa;-fileName: String&#xa;&#xa;-uploadPath: String&#xa;&#xa;-image: boolean" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-128">
+          <mxGeometry y="40" width="290" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-130" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="704.0000000000002" y="361" as="sourcePoint" />
+            <mxPoint x="704.0000000000002" y="311" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="704" y="331" />
+              <mxPoint x="704" y="331" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-131" value="&lt;시큐리티 구현체&gt;&#xa;CustomAccessDeniedHandler" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-1210" y="280" width="570" height="80" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-132" value="+handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ade): void" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-131">
+          <mxGeometry y="40" width="570" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-133" value="&lt;시큐리티 구현체&gt;&#xa;onAuthenticationSuccess" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-1210" y="400" width="500" height="100" as="geometry">
+            <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-134" value="+onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,&#xa; AccessDeniedException ade)&#xa;:void" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-133">
+          <mxGeometry y="40" width="500" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-137" value="&lt;시큐리티 구현체&gt;&#xa;CustomUserDetailsService" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-860" y="1070" width="300" height="170" as="geometry">
+            <mxRectangle x="550" y="140" width="160" height="26" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-138" value="-MemberMapper memberMapper&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-137">
+          <mxGeometry y="40" width="300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-139" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-137">
+          <mxGeometry y="80" width="300" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-140" value="+loadUserByUsername(String username): UserDetails" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-137">
+          <mxGeometry y="88" width="300" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-141" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-560.0000000000005" y="1270" as="sourcePoint" />
+            <mxPoint x="-470" y="1270" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
