@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-06-12T05:31:21.053Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36" etag="5frk6MdHGKuI4Mat4zwY" version="14.7.7" type="github">
+<mxfile host="app.diagrams.net" modified="2021-06-12T05:36:05.662Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36" etag="t9DwRfJZ9AXZAJ1YJgud" version="14.7.7" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="2130" dy="1954" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -380,26 +380,32 @@
           <mxGeometry y="74" width="450" height="296" as="geometry" />
         </mxCell>
         <mxCell id="lY5_7pqnY-cAQmy3Fjwy-103" value="&lt;Interface&gt;&#xa;MemberService" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="-330" y="420" width="200" height="310" as="geometry">
+          <mxGeometry x="-350" y="420" width="290" height="190" as="geometry">
             <mxRectangle x="130" y="380" width="160" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-104" value="+idCheck(String userid): int" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-103">
-          <mxGeometry y="40" width="200" height="210" as="geometry" />
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-104" value="+idCheck(String userid): int&#xa;&#xa;+insert(MemberVO vo): void&#xa;&#xa;+read(String userid): MemberVO&#xa;&#xa;+update(MemberVO vo): int&#xa;&#xa;+getAttachList(String userid): List&lt;BoardAttachVO&gt;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-103">
+          <mxGeometry y="40" width="290" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-105" value="&lt;구현체&gt;&#xa;BoardServiceimpl&#xa;" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="-345" y="770" width="230" height="420" as="geometry">
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-105" value="&lt;구현체&gt;&#xa;MemberServiceimpl&#xa;" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-320" y="660" width="300" height="420" as="geometry">
             <mxRectangle x="550" y="140" width="160" height="26" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-106" value="-BoardMapper mapper&#xa;&#xa;-AttachMapper AttachMapper&#xa;&#xa;-ReplyMapper ReplyMapper&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-105">
-          <mxGeometry y="40" width="230" height="100" as="geometry" />
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-106" value="-MemberMapper mapper&#xa;&#xa;-AttachMapper AttachMapper&#xa;&#xa;-PasswordEncoder pwen&#xa;&#xa;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-105">
+          <mxGeometry y="40" width="300" height="100" as="geometry" />
         </mxCell>
         <mxCell id="lY5_7pqnY-cAQmy3Fjwy-107" value="" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-105">
-          <mxGeometry y="140" width="230" height="8" as="geometry" />
+          <mxGeometry y="140" width="300" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-108" value="+register(BoardVO board): void&#xa;&#xa;+get(Long bno): BoardVO&#xa;&#xa;+remove(BoardVO board): int&#xa;&#xa;+modify(BoardVO board): int&#xa;&#xa;+getList(Criteria cri): List&lt;BoardVO&gt;&#xa;&#xa;+getTotal(Criteria cri): int&#xa;&#xa;+visit(Long bno): int&#xa;&#xa;+getAttachList(Long bno): List&#xa;&#xa;+Like(Long bno): int" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-105">
-          <mxGeometry y="148" width="230" height="272" as="geometry" />
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-108" value="+insert(MemberVO vo): void&#xa;&#xa;+read(String userid): MemberVO&#xa;&#xa;+update(MemberVO vo): int&#xa;&#xa;+getAttachList(String userid): List&lt;BoardAttachVO&gt;" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="lY5_7pqnY-cAQmy3Fjwy-105">
+          <mxGeometry y="148" width="300" height="272" as="geometry" />
+        </mxCell>
+        <mxCell id="lY5_7pqnY-cAQmy3Fjwy-109" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-205.82999999999998" y="660" as="sourcePoint" />
+            <mxPoint x="-205.82999999999998" y="610" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
