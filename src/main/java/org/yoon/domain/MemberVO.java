@@ -6,14 +6,16 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class MemberVO { 
+public class MemberVO {
 
 	private String userid;
 	private String userpw;
-	private String userName;
+	private String username;
+	private String useremail;
 	private boolean enabled;
-	 
+	
 	private Date regDate;
 	private Date updateDate;
-	private List<AuthVO> authList;
+	private List<AuthVO> authList; //유저 권한
+	private List<MemberAttachVO>attachList; //사용자 프로필 사진
 }
