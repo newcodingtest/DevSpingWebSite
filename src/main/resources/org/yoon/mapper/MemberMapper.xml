@@ -42,5 +42,10 @@ WHERE mem.userid = #{userid}
 	SELECT count(*)
 	FROM member
 	WHERE userid = #{userid}
-</select>	
+</select>
+
+<!-- 회원 정보 수정 -->
+<update id="update">
+update member set username = #{username} where userid= #{userid}
+</update>
 </mapper>
