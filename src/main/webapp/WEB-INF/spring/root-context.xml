@@ -16,6 +16,7 @@
 
 	<context:annotation-config></context:annotation-config>
 
+	<!-- 히카리 db 커넥션 풀 설정 -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 
 		<property name="driverClassName"
@@ -24,8 +25,44 @@
 			value="jdbc:log4jdbc:oracle:thin:@localhost:1521:XE"></property>
 		<property name="username" value="yoon"></property>
 		<property name="password" value="yoon"></property>
-
 	</bean>
+	
+	    <!-- 회원가입 이메일 인증 -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+     <property name="host" value="smtp.naver.com"/> <!-- 메이서버 호스트 -->
+     <property name="port" value="587"/> <!-- 메이서버 포트번호 -->
+     <property name="username" value=""/> <!-- 자신의 이메일 아이디 -->
+     <property name="password" value=""/> <!-- 자신의 비밀번호 -->
+       <!-- 보안연결 SSL과 관련된 설정 -->
+     <property name="javaMailProperties">
+      <props>
+      <prop key="mail.smtp.auth">true</prop>
+      <prop key="mail.smtp.starttls.enable">true</prop>
+      <prop key="mail.smtps.checkserveridentity">true</prop>
+      <prop key="mail.smtps.ssl.trust">*</prop>
+      <prop key="mail.debug">true</prop>
+      <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+      </props>
+     </property>
+    </bean>
+	
+
+  <!-- google Class Bean설정 추가 -->
+  <!-- 클라이언트ID와 보안비밀 세팅 -->
+  <bean id="googleConnectionFactory"
+  class="org.springframework.social.google.connect.GoogleConnectionFactory">
+    <constructor-arg value="308630109469-9par51iffero4klepa7o0d6cju7r9aup.apps.googleusercontent.com" />
+    <constructor-arg value="cv3GWUDpY91pdTc6tDAAK1S5" />
+  </bean>
+
+  <!-- 승인된 자바스크립트 원본과 승인된 리디렉션 URI -->
+  <bean id="googleOAuth2Parameters" class="org.springframework.social.oauth2.OAuth2Parameters">
+    <property name="scope" value="https://www.googleapis.com/auth/plus.login" />
+    <property name="redirectUri" value="http://localhost:8080/board/list" />
+  </bean>
+  <!-- google Class Bean설정 추가 -->
+
+
 
 	<!-- HikariCP configuration -->
 	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
