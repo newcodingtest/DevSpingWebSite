@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="org.yoon.mapper.GBoardAttachMapper">
+ 	<insert id="insert">
+ 		insert into attach (uuid, uploadpath, filename, filetype, gno) values
+ 		(#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{gno} )
+ 	</insert>
+ 	
+ 	<delete id="delete">
+ 		delete from attach where uuid = #{uuid}
+ 	</delete>
+ 	
+ 	<select id="findBygno" resultType="org.yoon.domain.GBoardAttachVO">
+ 		select * from attach where gno = #{gno}
+ 	</select>
+ 	
+ 	<delete id="deleteAll">
+ 		delete g_attach where gno = #{gno}
+ 	</delete>
+ </mapper>
