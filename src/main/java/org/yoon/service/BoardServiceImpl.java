@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
+import org.yoon.domain.GBoardVO;
 import org.yoon.mapper.AttachMapper;
 import org.yoon.mapper.BoardMapper;
 import org.yoon.mapper.ReplyMapper;
@@ -21,7 +22,6 @@ import lombok.extern.log4j.Log4j;
 @AllArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
-	
 	private BoardMapper mapper;
 	private AttachMapper AttachMapper;
 	private ReplyMapper ReplyMapper;
@@ -56,7 +56,7 @@ public class BoardServiceImpl implements BoardService {
 		//파일 같이 삭제
 		AttachMapper.deleteAll(bno);
 		
-		//글삭제
+		//
 		return mapper.delete(bno);
 	}
 
@@ -115,6 +115,18 @@ public class BoardServiceImpl implements BoardService {
 	public int Like(Long bno) {
 		log.info(bno+"좋아요!");
 		return mapper.like(bno);
+	}
+
+	@Override
+	public List<GBoardVO> getNewList() {
+		log.info("============갤러리게시판 최신글 조회==============");
+		return mapper.getNewList();
+	}
+
+	@Override
+	public List<GBoardVO> getBestList() {
+		log.info("============갤러리게시판 베스트글 조회==================");
+		return mapper.getBestList();
 	}
 
 
