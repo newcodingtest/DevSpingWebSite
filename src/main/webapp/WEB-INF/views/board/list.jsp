@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%@include file="../includes/header.jsp"%>
             <div class="row">
@@ -159,8 +160,15 @@ $(".move").on("click",function(e){
 
 //글 등록 창으로 이동=====================================
 $("#regBtn").on("click", function(e){
+	'<sec:authorize access="isAuthenticated()">'
 	self.location ="/board/register";
-})
+	'</sec:authorize>'
+	
+	'<sec:authorize access="isAnonymous()">'
+	alert("로그인후 가능합니다.");
+	self.location="/member/customLogin";
+	'</sec:authorize>'
+});
 
 
 //[OO번의 글이 등록 되었습니다.] 알람 창 =====================================
