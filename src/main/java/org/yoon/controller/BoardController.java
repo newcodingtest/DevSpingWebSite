@@ -63,6 +63,7 @@ public class BoardController {
 	}//End deleteFiles
 	
 	
+	
 	//글 리스트 출력
 	@GetMapping("/list")
 	public void list(Criteria cri, Model model) {
@@ -102,7 +103,7 @@ public class BoardController {
 	
 	//글 조회 페이지로 이동
 	@GetMapping({"/get", "/modify"})
-	public void get(@RequestParam("bno") Long bno, Model model) {
+	public void get(@RequestParam("bno") Long bno,@ModelAttribute("cri") Criteria cri, Model model) {
 		log.info("/get");
 		//조회수 증가
 		service.visit(bno);
@@ -110,23 +111,23 @@ public class BoardController {
 		
 	}
 	
-	@PreAuthorize("principal.username == #writer")
+	@PreAuthorize("principal.username == #board.writer")
 	//글 수정
 	@PostMapping("/modify")
-	public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri,RedirectAttributes rttr) {
+	public String modify(BoardVO board, Criteria cri,RedirectAttributes rttr) {
 		log.info("/modify");
 		
 		if(service.modify(board)==1) {
 			rttr.addFlashAttribute("result","success"); // 화면단으로 성공 메시지 전송
 		}
 		
-		return "redirect:/board/list";
+		return "redirect:/board/list"+cri.getListLink();
 	}
 	
 	@PreAuthorize("principal.username == #writer")
 	//글 삭제
 	@PostMapping("/remove")
-	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	public String remove(@RequestParam("bno") Long bno, Criteria cri, RedirectAttributes rttr,String writer) {
 		log.info("삭제: "+bno);
 		//파일 목록 가쟈오기
 		List<BoardAttachVO>list=service.getAttachList(bno);
