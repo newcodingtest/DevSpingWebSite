@@ -113,14 +113,15 @@ public class UploadController {
 	 */
 
 	@PreAuthorize("isAuthenticated()")
-	// 첨부파일 등록
+	// 첨부파일 여러개 등록
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
 
 		// 파일 여러개->배열형태
 		List<AttachFileDTO> list = new ArrayList<>();
-		String uploadFolder = "C:\\upload1";
+		 String uploadFolder = "C:\\upload1";
+		
 
 		// getFolder 메서드로 폴더 패턴 생성
 		String uploadFolderPath = getFolder();
@@ -171,6 +172,8 @@ public class UploadController {
 		} // End for
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
+	
+
 
 	// 파일 업로드시 썸네일 이미지 보여주기
 	// 문자열로 파일경로를 fileName으로 받고 byte[]로 이미지 데이터를 전송(http 헤더 메시지에 포함해서)
@@ -179,6 +182,7 @@ public class UploadController {
 	public ResponseEntity<byte[]> getFileImage(String fileName) {
 		log.info("썸네일 보여줘야 되는 파일 이름: " + fileName);
 		File file = new File("c:\\upload1\\" + fileName);
+		
 		log.info(file);
 		ResponseEntity<byte[]> result = null;
 
@@ -202,6 +206,7 @@ public class UploadController {
 		  log.info("다운로드 파일이름: "+fileName);
 		  
 		  Resource resource = new FileSystemResource("c:\\upoload1\\"+fileName);
+		  
 		  log.info(resource.exists());
 		  //다운받아야 할 해당 파일이 존재하지 않을 시 Not Found 에러 코드 리턴
 		  if(resource.exists()!= false) {
@@ -253,6 +258,7 @@ public class UploadController {
 			  log.info("다운로드 파일이름: "+fileName);
 			  
 			  Resource resource = new FileSystemResource("c:\\upoload1\\"+fileName);
+			
 			  log.info("resource: "+resource);
 			  log.info(resource.exists());
 			  if(resource.exists()!=false) {
@@ -301,6 +307,7 @@ public class UploadController {
 		 try {
 			 //받은 파일명의 주소를 디코드하여 진짜 주소명을 얻는다음
 			file = new File("c:\\upload1\\"+URLDecoder.decode(fileName,"UTF-8"));
+			 
 			//삭제
 			file.delete();
 		//이미지 파일의경우	
