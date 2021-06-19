@@ -72,7 +72,7 @@
                             <div class="row">
 					<div class="col-lg-6">
 							<div class="form-group">
-<form id="actionForm" method="post" action="/board/remove">
+
 								<label>제목</label> <input class="form-control"
 									value="<c:out value="${board.title}" />" readonly>
 
@@ -113,23 +113,24 @@
 						 <sec:authentication property="principal" var="pinfo"/>
 						  <sec:authorize access="isAuthenticated()">	
 						  <c:if test="${pinfo.username eq board.writer}">	
-							<button type="submit" class="update">수정</button>
+							<button class="update" data-oper='update'>수정</button>
 						  </c:if>
 						 </sec:authorize> 	 	
-							<button type="submit" class="list"><a herf="/board/list">목록으로</a></button><br><br>
+							<button class="list" data-oper='list'>목록으로</button><br><br>
 							
 <!-- 좋아요 버튼============================================================ -->
 							<div align="center">						
 							<p>추천수</p><img id="like" src='/resources/img/like.png' width="30" height="30" ><span id="like_result"><c:out value="${board.recomend}" /></span>
 							</div>
-							
-								<input type="hidden" id="bno" name="bno" value='<c:out value="${board.bno}"/>' >
-								<input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum}"/>'>
-  								<input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>'>
-  								 	<input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>' />
-							 	<input type='hidden' name='type' value='<c:out value="${cri.type }"/>'>
-							 	<input type='hidden' name='keyword' value='<c:out value="${cri.keyword }"/>'>
-							</form>
+<!-- form태그 및 히든태그================================================== -->							
+						<form id='operForm' action="/board/modify" method="get">
+						  <input type='hidden' id='bno' name='bno' value='<c:out value="${board.bno}"/>'>
+						  <input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum}"/>'>
+						  <input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>'>
+						  <input type='hidden' name='keyword' value='<c:out value="${cri.keyword}"/>'>
+						  <input type='hidden' name='type' value='<c:out value="${cri.type}"/>'>  
+						 
+</form>
 							
 				 <br>
 <!-- 댓글 작성란=============================================================================== -->
@@ -226,7 +227,7 @@
 										   		<small class="pull-right text-muted"></small><br>
 										   	</div>
 										   	<!-- 댓글 내용 나오는곳<p> -->	
-										   	<p></p><br>
+										   	<br>
 										   </div>
 										  </li> 	
 										</ul>
@@ -243,19 +244,15 @@
 						</div>
 					
 
-					<%@include file="../includes/footer.jsp"%>
-
+					
+<%@include file="../includes/footer.jsp"%>
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
-
-
 <script type="text/javascript">
-
-
 $(document).ready(function(){
 	console.log(replyService)
 	
-	var actionForm = $("#actionForm");
+	var actionForm = $("#operForm");
 	
 	//목록페이지로 이동
 	$(".list").on("click",function(e){
@@ -268,9 +265,25 @@ $(document).ready(function(){
 		e.preventDefault();
 		actionForm.attr("action","/board/modify").attr("method","get").submit();
 	});
+	  
+/* 	  $("button[data-oper='update']").on("click", function(e){
+	    
+	    operForm.attr("action","/board/modify").submit();
+	    
+	  });
+	  
+	    
+	  $("button[data-oper='list']").on("click", function(e){
+		   operForm.find("#bno").remove();
+		    operForm.attr("action","/board/list")
+		    operForm.submit();
+		    
+		    //self.location="/board/list";
+	  });   */
 	
 });//end document
-
+</script>
+<script>
 $(document).ready(function(){
 var bnoValue = '<c:out value="${board.bno}"/>';
 var replyChat = $(".chat");
@@ -415,12 +428,10 @@ var replyChat = $(".chat");
     var loginUser = '<sec:authentication property="principal.username"/>';   
     
 </sec:authorize>
-	
-	
-	
+
 	
 	//jquery로 자동으로 토큰 값 전송====================================================================
-	$(document).ajaxSend(function(e,xhr,options){
+$(document).ajaxSend(function(e,xhr,options){
 		xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 	});
 	
@@ -582,9 +593,5 @@ $("#like").on("click",function(e){
 });
 
 });	
-
 	
-	
-
 </script>
-      
