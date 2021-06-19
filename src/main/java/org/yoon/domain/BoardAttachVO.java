@@ -11,5 +11,6 @@ public class BoardAttachVO {
   private boolean fileType;
   
   private Long bno;
+  private String userid;
   
 }
