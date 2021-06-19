@@ -13,11 +13,12 @@ import org.yoon.domain.MemberVO;
 import org.yoon.mapper.MemberMapper;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 //MemberVO 를 UserDetails 타입으로 변환
-@Getter
+@Data
 public class CustomUser extends User {
 
 
