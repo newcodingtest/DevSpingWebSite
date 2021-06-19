@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
+import org.yoon.domain.GBoardVO;
 
 public interface BoardMapper {
 	
@@ -30,4 +31,9 @@ public interface BoardMapper {
 	public void updateReplyCnt(@Param("bno") Long bno, @Param("amount") int amount); 
 	//좋아요 증가
 	public int like(Long bno);
+	//최신글 조회
+		public List<GBoardVO> getNewList();
+			//베스트글 조회
+		public List<GBoardVO> getBestList();
+	
 }
