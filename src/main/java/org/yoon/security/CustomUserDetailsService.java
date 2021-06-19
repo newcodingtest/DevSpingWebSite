@@ -9,11 +9,13 @@ import org.yoon.mapper.MemberMapper;
 import org.yoon.security.domain.CustomUser;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 //CustomUser 에서 변환된 값을 리턴
 @Log4j
+
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Setter(onMethod_=@Autowired )
