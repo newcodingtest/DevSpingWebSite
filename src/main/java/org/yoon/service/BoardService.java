@@ -5,6 +5,7 @@ import java.util.List;
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
+import org.yoon.domain.GBoardVO;
 
 public interface BoardService {
 	
@@ -28,5 +29,9 @@ public interface BoardService {
 	public List<BoardAttachVO>getAttachList(Long bno);
 	//좋아요
 	int Like(Long bno);
+	//최신글 조회
+	public List<GBoardVO> getNewList();
+		//베스트글 조회
+	public List<GBoardVO> getBestList();
 }
 	
