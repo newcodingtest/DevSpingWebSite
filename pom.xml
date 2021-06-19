@@ -157,6 +157,19 @@
 		
 		</dependency>
 
+	    <!-- 회원가입 이메일 인증 -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>  
+        <!-- 회원가입 이메일 인증 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+
 		<!-- @Inject -->
 		<dependency>
 			<groupId>javax.inject</groupId>
@@ -171,7 +184,7 @@
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<!-- 롬복 어노테이션 -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -180,7 +193,7 @@
 		</dependency>
 
 
-		<!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+		<!-- 첨부파일 썸네일 -->
 		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
@@ -193,27 +206,43 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- 소셜 로그인(네이버) -->
+		<dependency>
+			<groupId>com.github.scribejava</groupId>
+			<artifactId>scribejava-core</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+		
+		<!-- 제이슨 파싱 -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		
+		<!-- jstl -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
 
-		<!-- Test -->
+		<!-- 테스트코드 -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-
+		<!-- 제이슨 파싱 -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.9.5</version>
 		</dependency>
 
-
+		<!-- 제이슨 파싱 -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
@@ -221,45 +250,51 @@
 		</dependency>
 
 
-	<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
+	<!--트리거-스케쥴러-->
 	<dependency>
 		<groupId>org.quartz-scheduler</groupId>
 		<artifactId>quartz</artifactId>
 		<version>2.3.0</version>
 	</dependency>
 
-
-	<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz-jobs -->
+	<!-- 트리거-스케쥴러  -->
 	<dependency>
 		<groupId>org.quartz-scheduler</groupId>
 		<artifactId>quartz-jobs</artifactId>
 		<version>2.3.0</version>
 	</dependency>
 
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-web</artifactId>
-    <version>5.0.6.RELEASE</version>
-</dependency>
+	<!-- 스프링 시큐리티 -->
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-web</artifactId>
+	    <version>5.0.6.RELEASE</version>
+	</dependency>
+	<!-- 스프링 시큐리티 -->
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-config</artifactId>
+	    <version>5.0.6.RELEASE</version>
+	</dependency>
+	<!-- 스프링 시큐리티 -->
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-core</artifactId>
+	    <version>5.0.6.RELEASE</version>
+	</dependency>
+	<!-- 스프링 시큐리티 -->
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-taglibs</artifactId>
+	    <version>5.0.6.RELEASE</version>
+	</dependency>
 
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-config</artifactId>
-    <version>5.0.6.RELEASE</version>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-core</artifactId>
-    <version>5.0.6.RELEASE</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
-<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-taglibs</artifactId>
-    <version>5.0.6.RELEASE</version>
-</dependency>
+  <!-- 소셜 로그인(구글) -->
+  <dependency>
+    <groupId>org.springframework.social</groupId>
+    <artifactId>spring-social-google</artifactId>
+    <version>1.0.0.RELEASE</version>
+  </dependency>
 
 	</dependencies>
 	<build>
