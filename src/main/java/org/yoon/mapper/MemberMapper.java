@@ -13,4 +13,7 @@ public interface MemberMapper {
 	
 	//회원가입
 	public void insert(MemberVO vo);
+	
+	//회원 수정
+	public int update(MemberVO vo);
 }
