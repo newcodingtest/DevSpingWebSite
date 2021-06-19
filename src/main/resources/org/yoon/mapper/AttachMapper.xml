@@ -10,19 +10,33 @@
 		values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno})
 	</insert>
 	
+	<insert id="insertUser">
+		insert into attach (uuid, uploadPath, fileName, fileType, userid)
+		values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{userid})
+	</insert>
+	
 	<delete id="delete">
 		delete from attach where uuid = #{uuid}
 	</delete>
 	
-		<delete id="deleteAll">
+	<delete id="deleteAll">
 		delete from attach where bno = #{bno}
+	</delete>
+	
+	
+	<delete id="deleteUser">
+		delete from attach where userid = #{userid}
 	</delete>
 	
 	<select id="findByBno" resultType="org.yoon.domain.BoardAttachVO">
 		select * from attach where bno = #{bno}
 	</select>
 	
-		<select id="getOldFiles" resultType="org.yoon.domain.BoardAttachVO">
+	<select id="findByUser" resultType="org.yoon.domain.BoardAttachVO">
+		select * from attach where userid = #{userid}
+	</select>
+	
+	<select id="getOldFiles" resultType="org.yoon.domain.BoardAttachVO">
 		select * from attach where uploadPath = to_char(sysdate-1, 'yyyy\mm\dd')
 	</select>
 
