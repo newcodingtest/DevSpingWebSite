@@ -4,7 +4,7 @@
         <!-- /#page-wrapper -->
 
     </div>
-    <!-- /#wrapper --> 
+    <!-- /#wrapper -->
 
     <!-- jQuery 주석처리 -->
 <!--     <script src="/resources/vendor/jquery/jquery.min.js"></script> -->
@@ -50,7 +50,6 @@ $('.summernote').summernote({
 	  lang: "ko-KR"
 	});
 </script>
-
 
 </body>
 
