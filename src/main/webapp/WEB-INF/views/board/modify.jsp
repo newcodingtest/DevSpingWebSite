@@ -68,10 +68,18 @@
                             <div class="row">
 					<div class="col-lg-6">
 <!-- form 태그=============================================================================  -->
-					<form id="actionForm" action="/board/modify" method="post">
+					<form id="actionForm" role="form" action="/board/modify" method="post">
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+					<input type="hidden" value='<c:out value="${board.bno }"/>' name="bno">
+					
+					<input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum}"/>'>
+					<input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>'>
+					<input type='hidden' name='type' value='<c:out value="${cri.type }"/>'>
+					<input type='hidden' name='keyword' value='<c:out value="${cri.keyword }"/>'> 
+				
 							<div class="form-group">
-								<label>제목</label> <input class="form-control" name="title"
+								<label>제목</label>
+								 <input class="form-control" name="title"
 									value="<c:out value="${board.title}" />" >
 
 							</div>
@@ -80,11 +88,13 @@
 									value="<c:out value="${board.content}" />" >
 							</div>
 							<div class="form-group">
-								<label>작성자</label> <input type="text" class="form-control" name="writer"
+								<label>작성자</label>
+								 <input type="text" class="form-control" name="writer"
 									value="<c:out value="${board.writer}" />" readonly >
 							</div>
 							<div class="form-group">
-								<label>첨부파일</label> <input type="file">
+								<label>첨부파일</label>
+								<input type="file" name='uploadFile' multiple="multiple">
 <!-- 첨부파일 사진 나오는 부분 uploadResult ====================================================================== -->
 
 									<div class='uploadResult'>
@@ -108,12 +118,11 @@
 						<sec:authentication property="principal" var="pinfo"/>
 						 <sec:authorize access="isAuthenticated()">
 						  <c:if test="${pinfo.username eq board.writer}">		 
-							<button type="submit" class="update" data-oper="update">등록</button>
-							<button type="submit" class="delete" data-oper="delete">삭제</button>
+							<button class="update" data-oper="update">등록</button>
+							<button class="remove" data-oper="remove">삭제</button>
 						  </c:if>	
 						 </sec:authorize>	
-							<button type="submit" class="list"><a herf="/board/list">목록으로</a></button>
-							<input type="hidden" value='<c:out value="${board.bno }"/>' name="bno">
+							<button class="list" data-oper="list">목록으로</button>
 				 <br>
 </form>
 						<div class="card mb-2">
@@ -143,15 +152,9 @@
 
 					</div>
 
-<input id="bno" type="hidden" value="<c:out value='${board.bno}' />" />
-<input type='hidden' name='pageNum' value='<c:out value="${cri.pageNum}"/>'>
-<input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>'>
-<input type='hidden' name='amount' value='<c:out value="${cri.amount}"/>' />
-<input type='hidden' name='type' value='<c:out value="${cri.type }"/>'>
-<input type='hidden' name='keyword' value='<c:out value="${cri.keyword }"/>'>
 
-					<%@include file="../includes/footer.jsp"%>
-
+<%@include file="../includes/footer.jsp"%>
+      
 <script>
 //업로드 결과를 화면에 처리하는 함수=================================================================================
 function showUploadResult(uploadResultArr){
@@ -190,9 +193,13 @@ function showUploadResult(uploadResultArr){
 	uploadUL.append(str);
 });//End showUploadResult
 }
-
+</script>
+<script>
 //===============================================================document.ready========================================
 $(document).ready(function(){
+	var pageNumTag = $("input[name='pageNum']").val();
+	  console.log(pageNumTag);
+	
 	
 	var actionForm = $("#actionForm");
 	
@@ -210,36 +217,50 @@ $(document).ready(function(){
 		console.log(operation);
 		
 		//2.delete 같은 패턴으로 목록/수정등록 또한 가능========================================================
-		if(operation === 'delete'){
-			actionForm.attr("action","/board/remove")
+		if(operation === 'remove'){
+			actionForm.attr("action","/board/remove");
 		//3.list 이전에 봤던 페이지 정보 같이 넘기기==============================================================	
 		}else if(operation === 'list'){
 			
-			actionForm.attr("action", "/board/list").attr("method");
-			var pageNum= $("input[name='pageNum']").clone();
-			var amount=	$("input[name='amount']").clone();
+			actionForm.attr("action", "/board/list").attr("method","get");
+		        
+			  var pageNumTag = $("input[name='pageNum']").clone();
+			  console.log(pageNumTag);
+		      var amountTag = $("input[name='amount']").clone();
+		      var keywordTag = $("input[name='keyword']").clone();
+		      var typeTag = $("input[name='type']").clone();      
+		      
+		      actionForm.empty();
+		      
+		      actionForm.append(pageNumTag);
+		      actionForm.append(amountTag);
+		      actionForm.append(keywordTag);
+		      actionForm.append(typeTag);
 			
-			actionForm.empty();
-			actionForm.append(pageNum);
-			actionForm.append(amount);
+			
 		//4.update 게시물 수정================================================================================
 		}else if(operation == 'update'){
+			
 			console.log("수정 버튼 클릭");
 			var str="";
-			$(".uploadResult ul li").each(function(i,obj){
-				var obj = $(obj);
-				console.dir(obj);
-				//5.수정된 파일정보 히든값으로 넘기기=====================================
-				str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+obj.data("filename")+"'>"
-				str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+obj.data("uuid")+"'>"
-				str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+obj.data("uploadPath")+"'>"
-				str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+obj.data("fileType")+"'>"
-			});
-			actionForm.append(str).submit();
-		}
-		
+			
+			 $(".uploadResult ul li").each(function(i, obj){
+		          
+		          var jobj = $(obj);
+		          
+		          console.dir(jobj);
+		          
+		          str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jobj.data("filename")+"'>";
+		          str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'>";
+		          str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jobj.data("path")+"'>";
+		          str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+ jobj.data("type")+"'>";
+		          
+		        });
+			 actionForm.append(str).submit();
+	        }
+	    
 		actionForm.submit();
-	});
+		  });
 	
 	//즉시 실행함수 실행하여 해당글의 파일 가져오기================================================================	
 	(function(){
@@ -277,7 +298,7 @@ $(document).ready(function(){
 		});//end getjson
 	})();//end function	
 	
-//파일의 삭제 버튼 누를시 화면 내에서만 첨부파일이 사라짐(아직까지 서버내에선 사라지지 않음)=====================================================
+//파일의 삭제 버튼 누를시 화면 내에서만 첨부파일이 사라짐(아직까지 서버내에선 사라지지 않음): 수정을 완료하지 않고 브라우저를 강제종료했을때 수정내용이 적용되지 않도록 의도=====================================================
 	$(".uploadResult").on("click","button", function(e){
 		console.log("파일 삭제");
 		
@@ -346,4 +367,3 @@ $(document).ready(function(){
 	
 });
 </script>
-      
