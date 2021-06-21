@@ -29,7 +29,7 @@ import org.yoon.service.BoardService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-@Controller
+@Controller 
 @Log4j
 @RequestMapping("/board/*")
 @AllArgsConstructor // 모든 필드값 생성자 주입
