@@ -26,8 +26,12 @@
 		$.each(arr, function(i, value){
 			$.getJSON("/Gboard/getAttachList", {gno: value}, function(attach){
 				console.log(attach[0]);
-				var fileCallPath = encodeURIComponent(attach[0].uploadPath+"/"+attach[0].uuid+"_"+attach[0].fileName);
-				$(".thumbnail"+(i+1)+" .thumbnail-img").attr("src","/Gboard/display?fileName="+fileCallPath);
+				if(typeof attach == "undefined" || attach == null || attach == ""){
+				$(".thumbnail"+(i+1)+" .thumbnail-img").attr("src","/resources/img/userimage.jpg");
+				}else{
+					var fileCallPath = encodeURIComponent(attach[0].uploadPath+"/"+attach[0].uuid+"_"+attach[0].fileName);
+					$(".thumbnail"+(i+1)+" .thumbnail-img").attr("src","/Gboard/display?fileName="+fileCallPath);
+				}
 			});
 	
 		});//each
