@@ -54,7 +54,11 @@
 
 
 </style>
-
+	<!-- ==============================로그인 시 사용자 아이디 저장============================ -->
+	<sec:authorize access="isAuthenticated()">
+		<sec:authentication property="principal.username" var="id"/>
+	</sec:authorize>
+	
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">자유게시판</h1>
@@ -110,17 +114,29 @@
 								
 							</div>
 <!-- 접근권한에 따른 버튼 제어======================================================================== -->
-						 <sec:authentication property="principal" var="pinfo"/>
-						  <sec:authorize access="isAuthenticated()">	
-						  <c:if test="${pinfo.username eq board.writer}">	
+>
+						  <sec:authorize access="isAuthenticated()">
+						  <c:if test="${id eq board.writer}">	
 							<button class="update" data-oper='update'>수정</button>
 						  </c:if>
 						 </sec:authorize> 	 	
 							<button class="list" data-oper='list'>목록으로</button><br><br>
-							
-<!-- 좋아요 버튼============================================================ -->
-							<div align="center">						
-							<p>추천수</p><img id="like" src='/resources/img/like.png' width="30" height="30" ><span id="like_result"><c:out value="${board.recomend}" /></span>
+							<div align="center">	
+							<!-- ============================================================추천하기=================================================================================== -->					
+				<button type="button" class="btn btn-default" id="recommend" onclick="recommend('${id}');">
+	                 <span class="glyphicon glyphicon-thumbs-up"></span> 
+	                 <span id="recommendText">
+	          <c:if test="${!isRecommend}">        
+	                 	추천하기
+	          </c:if>
+	          <c:if test="${isRecommend}">        
+	                 	추천취소
+	          </c:if>
+	          		</span>
+	              </button>
+	               <br> <br>
+	               <span class="post-info">추천수 <c:out value="${board.recomend }"/></span><br>
+	          		  <span class="post-info">조회수 <c:out value="${board.visit }"/></span><br>
 							</div>
 <!-- form태그 및 히든태그================================================== -->							
 						<form id='operForm' action="/board/modify" method="get">
@@ -147,13 +163,14 @@
 	<!-- 로그인 sec ================================================================================================-->											
 										<sec:authorize access="isAuthenticated()">
 												 <input type="text" id="rmdReplayer" name="replayer" class="form-control ml-2" 
-												  value='<sec:authentication property="principal.username"/>' readonly="readonly">
+												  value='${id}' readonly="readonly">
 												 <label for="replyPassword"
 												class="ml-4"><i class="fa fa-unlock-alt fa-2x"></i></label>
 											
 										</div> <textarea id="rmdInput" class="form-control" name="reply"
 											id="exampleFormControlTextarea1" rows="3"></textarea>
 										<button id="rmdBtn"type="button" class="btn btn-dark mt-3">등록</button>
+										<form name="superhide" method="post" action="#"><input type="checkbox" name="hidecheck" value="" onclick="hidebutton()"> 비밀댓글</form> <!-- 2021-06-22 form 및 onclick 함수 추가. -->
 										</sec:authorize>
 										
 									</li>
@@ -243,12 +260,72 @@
 							<!-- ./ end row -->
 						</div>
 					
-
-					
 <%@include file="../includes/footer.jsp"%>
 <script type="text/javascript" src="/resources/js/reply.js"></script>
 
 <script type="text/javascript">
+var hidetemp = 0;
+function hidebutton(){
+	//비밀댓글 체크하면 1
+	if (document.superhide.hidecheck.checked == true){
+		hidetemp = 1;
+	}//비밀댓글 체크안하면 0
+	else { hidetemp = 0;}
+	console.log(hidetemp);
+}//End hidebutton
+
+var csrfHeaderName = "${_csrf.headerName}";
+var csrfTokenValue = "${_csrf.token}";
+//jquery로 자동으로 토큰 값 전송====================================================================
+$(document).ajaxSend(function(e,xhr,options){
+		xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+	});
+//추천하기======================================================
+function recommend(id){
+		var rcmText = $("#recommendText").text().trim();
+		console.log("추천하기 태그값: "+rcmText);
+		console.log("로그인아이디: "+id);
+		//로그인 한 사용자만 추천 가능
+		if(!id){
+			alert("로그인한 사용자만 추천이 가능합니다.");
+			self.location="/member/customLogin";
+		}else{
+			//로그인 했을때
+			if(rcmText === "추천하기"  ){
+				var check = confirm("해당 글을 추천하시겠습니까?")
+			}else if(rcmText === '추천취소'){
+				var check = confirm("추천을 취소하겠습니까?")
+			}
+			if(check){
+				var bno = "${board.bno}";
+				console.log(bno);
+				$.ajax({
+					url: "/board/recommend",
+					data: {id:id,bno: bno},
+					type: "post",
+					beforeSend: function(xhr){
+						xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+					},
+					success:function(result){
+						//추천하기 버튼을 눌렀을때 컨트롤러 로직에서 추천이 완료됫고 return 값으로 
+						//recommend 이 됨 -> 추천이 완료됫기때문에 추천버튼에는 추천취소 버튼으로 바뀜
+						if(result == 'recommend'){
+							$("#recommendText").empty();
+							$("#recommendText").text("추천취소");
+						//위와는 반대로 추천이력이 없고 default 상태임	
+						}else{
+							$("#recommendText").empty();
+							$("#recommendText").text("추천하기");
+						}
+						history.go(0);
+					},
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					}
+				}); //end ajax
+			}//end if
+		}//end else
+	}//end function recommend()
 $(document).ready(function(){
 	console.log(replyService)
 	
@@ -392,10 +469,25 @@ var replyChat = $(".chat");
 				 return;
 			 }
 			 for(var i=0, len=list.length||0; i<len; i++){
-				 str +=" <li id='rnoid' class='left claerfix' data-rno='"+list[i].rno+"'>";
-				 str +="  <div><div id='replyID'><strong class='primary-font' id='span_id'>"+list[i].replayer+"</strong>";
-				 str +="   <small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
-				 str +="    <p id='Rereply'>"+list[i].reply+"</p><button id='Replyremove' type='button' data-rno='"+list[i].rno+"' data-id='"+list[i].replayer+"'>삭제</button></div></li>";
+				// DB에서 읽은 hide의 상태에 따라 't' = 비밀댓글,
+				 if(list[i].hide != 't' || loginUser==list[i].replayer || loginUser=="${board.writer}" ){ 
+					 str +=" <li id='rnoid' class='left claerfix' data-rno='"+list[i].rno+"'>";
+					 str +="  <div><div id='replyID'><strong class='primary-font' id='span_id'>"+list[i].replayer+"</strong>";
+					 str +="   <small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
+					 str +="    <p id='Rereply'>"+list[i].reply+"</p><button id='Replyremove' type='button' data-rno='"+list[i].rno+"' data-id='"+list[i].replayer+"'>삭제</button></div></li>";
+					console.log("비공개여부: "+list[i].hide);
+					 //'f' = 공개댓글	
+				 } else if (list[i].hide == 't' && loginUser!=list[i].replayer ){ 
+					 str +=" <li id='rnoid' class='left claerfix' data-rno='"+list[i].rno+"'>"; //html문장 + 자바스크립트 + html태그 종료
+					 str +="  <div><div id='replyID'><strong class='primary-font' id='span_id'>"+list[i].replayer+"</strong>";
+					 str +="   <small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
+					 str +="    <p id='Rereply'>비공개된 댓글입니다.</p><button id='Replyremove' type='button' data-rno='"+list[i].rno+"' data-id='"+list[i].replayer+"'>삭제</button></div></li>"; // else if 문 추가.
+				 }else{
+					 str +=" <li id='rnoid' class='left claerfix' data-rno='"+list[i].rno+"'>"; //html문장 + 자바스크립트 + html태그 종료
+					 str +="  <div><div id='replyID'><strong class='primary-font' id='span_id'>"+list[i].replayer+"</strong>";
+					 str +="   <small class='pull-right text-muted'>"+replyService.displayTime(list[i].replyDate)+"</small></div>";
+					 str +="    <p id='Rereply'>"+list[i].reply+"</p><button id='Replyremove' type='button' data-rno='"+list[i].rno+"' data-id='"+list[i].replayer+"'>삭제</button></div></li>";
+				 }
 			 }
 			 replyChat.html(str);
 			 
@@ -430,23 +522,49 @@ var replyChat = $(".chat");
 </sec:authorize>
 
 	
-	//jquery로 자동으로 토큰 값 전송====================================================================
-$(document).ajaxSend(function(e,xhr,options){
-		xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
-	});
+
 	
 	//댓글 등록 처리============================================================================
+		////////// 2021-06-22 체크 여부를 판단해서, hide[비밀댓글 여부]를 t, f로 분간하여 보냄  ////
+		////////// 2021-06-22 스펠체크(텍스트 필드 공간 null 여부,), 공백 문자 (blank_pattern) 인식 기능 추가.////
 	rmdBtn.on("click", function(e){
+		var spellCheck = document.getElementById("rmdInput");
+		var blank_pattern = /^\s+|\s+$/g;
+		if(spellCheck.value == '' || spellCheck.value == null){
+			alert('내용을 적어주세요');
+		}
+		
+		else if (spellCheck.value.replace(blank_pattern, '' ) == "" ){
+			alert('공백은 불가합니다. 내용을 적어주세요');
+		}
+		else{
+		
+		if(hidetemp == 1){
 		var reply = {
 				reply : rmdInput.val(),
 				replayer : rmdReplayer.val(),
-				bno : bnoValue };
+				bno : bnoValue,
+				hide : 't'};
+		
+		alert('비밀글 활성화');
+		}
+		if (hidetemp == 0) {
+			var reply = {
+				reply : rmdInput.val(),
+				replayer : rmdReplayer.val(),
+				bno : bnoValue,
+				hide : 'f'};
+		
+		
+		alert('공개글 활성화');
+	}
 		
 		replyService.add(reply, function(result){
 			alert("댓글 작성 성공");
 			showList(1);
 		});
 		
+		}
 		});//end rmdBtn
 		
 	//댓글 삭제===============================================================================	 
@@ -567,30 +685,6 @@ function showImage(fileCallPath){
 
 	}//ENd showImage
 
-$("#like").on("click",function(e){
-	e.preventDefault();
-	var like=$("#like");
-	
-	$.ajax({
-		type: "post",
-		url: "/board/like",
-		dataType: "json",
-		data: "bno="+bnoValue,
-		success: function(result){
-			var str="";
-			console.log(result)
-			if(result == 1){
-				alert("해당 글을 추천 하였습니다.");
-			
-			}else if(result == 0){
-				alert("추천 에러 발생.");
-			 	
-			}
-			//location.reload();
-		}
-	});
-	location.reload();
-});
 
 });	
 	

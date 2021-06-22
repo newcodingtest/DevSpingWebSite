@@ -6,8 +6,8 @@
 <mapper namespace="org.yoon.mapper.ReplyMapper">
 	<!-- 댓글 추가 -->
 	<insert id="insert">
-		insert into reply (rno, bno, reply, replayer)
-		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer})
+		insert into reply (rno, bno, reply, replayer, hide)
+		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide})
 	</insert>
 	
 	<!-- 댓글조회 -->
@@ -36,11 +36,11 @@
 	<!-- 댓글 페이징 처리 -->
 	<select id="getListPaging" resultType="org.yoon.domain.ReplyVO">
 	<![CDATA[
-		select rno, bno, reply, replayer, replydate, updatedate
+		select rno, bno, reply, replayer, replydate, updatedate, hide
 		from
 		(
 		  select /*+INDEX_DESC(reply idx_reply)*/
-		    rownum rn, rno, bno, reply, replayer, replydate, updatedate
+		    rownum rn, rno, bno, reply, replayer, replydate, updatedate, hide
 		  from reply
 		  where bno = #{bno} 
 		  and rno > 0
