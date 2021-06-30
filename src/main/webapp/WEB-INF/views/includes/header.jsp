@@ -267,6 +267,11 @@
 		 
 		<li><a href="/member/customLogout"><i class="fa fa-sign-out fa-fw"></i>
 		    로그아웃</a></li>
+		    <!-- 로그인 된 사용자의 권한이 admin 일경우 -->
+		    <sec:authorize access="hasRole('ROLE_ADMIN')">
+		    <a href="/admin/memberList"><i class="fa fa-sign-out fa-fw"></i>
+		    회원리스트</a></li>
+		    </sec:authorize>
 		</sec:authorize>
 		
 		<sec:authorize access="isAnonymous()"> 
@@ -294,6 +299,9 @@
                             </span>
                             </div>
                             <!-- /input-group -->
+                        </li>
+                         <li>
+                            <a href="/main"><i class="fa fa-dashboard fa-fw"></i> 오늘의 추천!</a>
                         </li>
                         <li>
                             <a href="/board/list"><i class="fa fa-dashboard fa-fw"></i> 자랑게시판</a>

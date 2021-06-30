@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.yoon.domain.BoardAttachVO;
+import org.yoon.domain.Criteria;
 import org.yoon.domain.GBoardVO;
 import org.yoon.domain.MemberAttachVO;
 import org.yoon.domain.MemberVO;
@@ -36,10 +37,15 @@ public class MemberServiceImpl implements MemberService{
 		log.info("==회원 등록==");
 		String pwd=pwen.encode(vo.getUserpw());
 		vo.setUserpw(pwd);
-		mapper.insert(vo);
 		
+		//네이버 연동으로 가입신청으 왔으면 네이버연동정보와 함께 회원가입
+		if(vo.getNaverLogin()!=null) {
+			mapper.insertN(vo);
+		//아니면 일반적인 회원가입	
+		}else {
+			mapper.insert(vo);
+		}
 	}
-
 
 	@Override
 	public MemberVO read(String userid) {
@@ -73,6 +79,36 @@ public class MemberServiceImpl implements MemberService{
 	public List<BoardAttachVO> getAttachList(String userid) {
 		log.info(userid+"회원의 프로필 파일 가져오기");
 		return AttachMapper.findByUser(userid);
+	}
+
+	@Override
+	public MemberVO naverChk(MemberVO vo) {
+		// TODO Auto-generated method stub
+		return mapper.naverChk(vo);
+	}
+
+	@Override
+	public int updateN(MemberVO vo) {
+		// TODO Auto-generated method stub
+		return mapper.updateN(vo);
+	}
+
+	@Override
+	public int emailCheck(String useremail) {
+		// TODO Auto-generated method stub
+		return mapper.emailCheck(useremail);
+	}
+
+	@Override
+	public List<MemberVO> getList(Criteria cri) {
+		// TODO Auto-generated method stub
+		return mapper.getListPaging(cri);
+	}
+
+	@Override
+	public int getTotal(Criteria cri) {
+		// TODO Auto-generated method stub
+		return mapper.getTotal(cri);
 	}
 
 

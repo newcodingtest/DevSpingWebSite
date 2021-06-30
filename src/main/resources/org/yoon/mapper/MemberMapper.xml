@@ -3,13 +3,27 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.yoon.mapper.MemberMapper">
-
+<!-- 검색 조건 -->
+<sql id="criteria">
+	<trim prefixOverrides="OR" prefix="(" suffix=") AND">
+		<foreach collection="typeArr" item="type">
+			<trim prefix="OR">
+				<choose>
+					<when test="type == 'id'.toString()">userid like '%'||#{keyword}||'%'</when>
+					<when test="type == 'name'.toString()">username like '%'||#{keyword}||'%'</when>
+					<when test="type == 'email'.toString()">useremail like '%'||#{keyword}||'%'</when>
+				</choose>
+			</trim>
+		</foreach>
+	</trim>
+</sql>
 
   <resultMap type="org.yoon.domain.MemberVO" id="memberMap">
     <id property="userid" column="userid"/>
     <result property="userid" column="userid"/>
     <result property="userpw" column="userpw"/>
     <result property="username" column="username"/>
+    <result property="useremail" column="useremail"/>
     <result property="regDate" column="regdate"/>
     <result property="updateDate" column="updatedate"/>
     <collection property="authList" resultMap="authMap">
@@ -23,20 +37,12 @@
   
   <select id="read" resultMap="memberMap">
 SELECT 
-  mem.userid,  userpw, username, enabled, regdate, updatedate, auth
+  mem.userid,  userpw, username, useremail, enabled, regdate, updatedate, auth
 FROM 
   member mem LEFT OUTER JOIN member_auth auth on mem.userid = auth.userid 
 WHERE mem.userid = #{userid} 
   </select>
 
-<!-- 회원가입 -->	
-	<insert id="insert">
-		INSERT ALL
-			INTO member(mno, userid, userpw, username) values(member_sequence.nextval, #{userid}, #{userpw}, #{username})
-            INTO member_auth(userid, auth) values(#{userid}, 'ROLE_USER')
-        SELECT * FROM DUAL       	
-	</insert>
-	
 <!-- id중복체크 -->
 <select id="idChk" parameterType="String" resultType="int">
 	SELECT count(*)
@@ -44,8 +50,71 @@ WHERE mem.userid = #{userid}
 	WHERE userid = #{userid}
 </select>
 
+<!-- 이메일 중복체크 -->
+<select id="emailCheck" parameterType="String" resultType="int">
+	SELECT count(*)
+	FROM member
+	WHERE useremail = #{useremail}
+</select>
+
+<!-- 회원 리스트 페이징 출력 -->
+<select id="getListPaging" resultType="org.yoon.domain.MemberVO">
+	<![CDATA[
+	select
+		 userid, username, regDate, useremail
+	from
+	 (
+	 select /*+INDEX_DESC(member pk_member) */
+	 		rownum rn, userid, username, regDate, useremail
+	 from 
+	   	 member
+	 where  
+	 ]]>
+	 <include refid="criteria"/>
+	<![CDATA[
+		rownum <= #{pageNum} * #{amount}
+		)
+	where rn > (#{pageNum} -1 )* #{amount}	
+	]]>	 	 	
+</select>
+
+<!-- 전체 회원 수 출력 -->
+<select id="getTotal" resultType="int">
+	select count(*) from member 
+	where mno > 0 
+</select>
+
+<!-- 회원가입 -->	
+	<insert id="insert">
+		INSERT ALL
+			INTO member(mno, userid, userpw, username, useremail) values(member_sequence.nextval, #{userid}, #{userpw}, #{username}, #{useremail})
+            INTO member_auth(userid, auth) values(#{userid}, 'ROLE_USER')
+        SELECT * FROM DUAL       	
+	</insert>
+	
+
+<!-- 네이버전용 회원가입 -->	
+	<insert id="insertN">
+		INSERT ALL
+			INTO member(mno, userid, userpw, username, useremail,naverLogin) values(member_sequence.nextval, #{userid}, #{userpw}, #{username}, #{useremail}, #{naverLogin})
+            INTO member_auth(userid, auth) values(#{userid}, 'ROLE_USER')
+        SELECT * FROM DUAL       	
+	</insert>	
+	
+
 <!-- 회원 정보 수정 -->
 <update id="update">
 update member set username = #{username} where userid= #{userid}
+</update>
+
+<!-- 네이버 연동 여부 -->
+	<select id="naverChk" resultType="org.yoon.domain.MemberVO">
+	  select userid,useremail, username, naverLogin from member where naverLogin =#{naverLogin} OR useremail = #{useremail}
+</select>
+	
+
+<!-- 네이버연동 회원으로 정보 수정 -->
+<update id="updateN">
+update member set naverLogin = #{naverLogin} where useremail=#{useremail}
 </update>
 </mapper>
