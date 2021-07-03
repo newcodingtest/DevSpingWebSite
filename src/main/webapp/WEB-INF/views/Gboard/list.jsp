@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ include file="../includes/header.jsp"%>
-
+ 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <style>
   .register-btn,.postList{
@@ -166,7 +166,7 @@
 		</c:if>
 		<c:forEach var="num" begin="${pageMaker.startPage}"
 			end="${pageMaker.endPage}">
-			<li>
+			<li class="paginate_button">
 				<a href="${num}" ${pageMaker.cri.pageNum == num ?'style="color:red;"':""} >${num}</a>
 			</li>
 		</c:forEach>
@@ -222,6 +222,7 @@
 		searchForm.submit();
 	});
 	
+	var actionForm = $("#actionForm");
 	//페이지 번호 누르면 이동 ==============================================
     $(".paginate_button a").on("click", function(e){
     	e.preventDefault();
