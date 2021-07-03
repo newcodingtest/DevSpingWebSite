@@ -87,8 +87,13 @@
 		$.each(arr1, function(i, value){
 			$.getJSON("/Gboard/getAttachList", {gno: value}, function(attach){
 				console.log(attach[0]);
-				var fileCallPath = encodeURIComponent(attach[0].uploadPath+"/"+attach[0].uuid+"_"+attach[0].fileName);
-				$(".item1"+(i+1)).attr("src","/Gboard/display?fileName="+fileCallPath);
+				if(typeof attach == "undefined" || attach == null || attach == ""){
+					$(".item1"+(i+1)).attr("src","/resources/img/userimage.jpg");
+					}else{
+						var fileCallPath = encodeURIComponent(attach[0].uploadPath+"/"+attach[0].uuid+"_"+attach[0].fileName);
+						$(".item1"+(i+1)).attr("src","/Gboard/display?fileName="+fileCallPath);
+					}
+			
 			});
 	
 		});//each
@@ -105,8 +110,16 @@
 		$.each(arr, function(i, value){
 			$.getJSON("/Gboard/getAttachList", {gno: value}, function(attach){
 				console.log(attach[0]);
-				var fileCallPath = encodeURIComponent(attach[0].uploadPath+"/"+attach[0].uuid+"_"+attach[0].fileName);
-				$(".item2"+(i+1)).attr("src","/Gboard/display?fileName="+fileCallPath);
+				if(typeof attach == "undefined" || attach == null || attach == ""){
+					$(".item2"+(i+1)).attr("src","/resources/img/userimage.jpg");
+					}else{
+					
+						var fileCallPath = encodeURIComponent(attach[0].uploadPath+"/"+attach[0].uuid+"_"+attach[0].fileName);
+						$(".item2"+(i+1)).attr("src","/Gboard/display?fileName="+fileCallPath);
+					}
+				
+	
+			
 			});
 	
 		});//each
@@ -179,7 +192,7 @@
 					<!-- ================================이미지 들어갈 자리====================================== -->
 					<img class="item1${status.count}"/>
 	                  	<a class="title" href="/Gboard/get?gno=${vo.gno}"><c:out value="${vo.title}"/></a>
-	                  <span class="writer"><c:out value="${vo.writer}"/><span><br>
+	                  <span class="writer" align="center"><c:out value="${vo.writer}"/><span><br>
 	                  <span class="regdate">
 	                  	<fmt:formatDate pattern="yyyy-MM-dd" value="${vo.regdate}"/>
 	                  </span>&nbsp;&nbsp;
