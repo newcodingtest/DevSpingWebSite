@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+		//시큐리티에서 username은 실제 유저 아이디로 인식
 		log.warn("유저정보 로드: "+username);
 		MemberVO vo=memberMapper.read(username);
 

@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import lombok.extern.log4j.Log4j;
@@ -18,11 +20,13 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler  {
 	
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
-			AccessDeniedException accessDeniedException) throws IOException, ServletException {
-
-		log.error("Access Denied Handler");
+			AccessDeniedException ad) throws IOException, ServletException {
+	
+				request.setAttribute("msg", "정보가 없습니다. 회원가입 후 이용해주세요");
+			
+				log.error("Access Denied Handler");
 		
-		response.sendRedirect("/accessError");
+		response.sendRedirect("/err/denied-page");
 	}
 
 }
