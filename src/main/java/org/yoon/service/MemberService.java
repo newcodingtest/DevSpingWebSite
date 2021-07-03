@@ -19,17 +19,22 @@ public interface MemberService {
 	public void insert(MemberVO vo);
 	//회원 정보 가져오기
 	public MemberVO read(String userid);
+	//회원 탈퇴
+	public int delete(String userid);
 	//회원 정보 수정
 	public int update(MemberVO vo);
 	//회원 프로필 사진파일 가져오기
 	public List<BoardAttachVO>getAttachList(String userid);
 	//회원 페이징된 리스트로 가져오기
 	public List<MemberVO> getList(Criteria cri);
-	
+	//회원 리스트 페이징
 	public int getTotal(Criteria cri);
 	//네이버 연동 여부
 	public MemberVO naverChk(MemberVO vo);
 	//네이버 연동 컬럼수정
 	public int updateN(MemberVO vo);
-	
+	//내가 쓴 글,댓글 가져오기
+	public List<BoardVO> getAllboard(String userid);
+	//내가 쓴 글 개수 출력
+	public int getAllboardCount(String userid);
 }

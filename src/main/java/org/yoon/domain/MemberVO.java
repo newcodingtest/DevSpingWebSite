@@ -14,6 +14,7 @@ public class MemberVO {
 	private String useremail;
 	private boolean enabled;
 	private String naverLogin;
+	private String introduce;
 	
 	private Date regDate;
 	private Date updateDate;

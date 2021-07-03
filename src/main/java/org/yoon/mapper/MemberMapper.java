@@ -14,6 +14,8 @@ public interface MemberMapper {
 	public List<MemberVO> getListPaging(Criteria cri);
 	//페이징에 쓰일 회원 전체 수
 	public int getTotal(Criteria cri);
+	//회원탈퇴
+	public int deleteUser(String userid);
 	//id중복체크
 	public int idChk(String userid);
 	//이메일 중복체크
@@ -28,4 +30,10 @@ public interface MemberMapper {
 	public int updateN(MemberVO vo);
 	//네이버 연동 여부
 	public MemberVO naverChk(MemberVO vo);
+	//내가 쓴 글(자유,갤러리) 가져오기
+	public List<BoardVO> getAllboard(String userid);
+	//내가 쓴 글 개수 출력
+	public int getAllboardCount(String userid);
+	//내가 쓴 댓글 개수 출력
+	public int getAllReplyCount(String userid);
 }

@@ -81,13 +81,46 @@ WHERE mem.userid = #{userid}
 <!-- 전체 회원 수 출력 -->
 <select id="getTotal" resultType="int">
 	select count(*) from member 
+	<![CDATA[
 	where mno > 0 
+	]]>	
 </select>
+
+<!-- 내가 쓴 게시글(최신5개) 출력 -->
+<select id="getAllboard" resultType="org.yoon.domain.BoardVO">
+select *
+from
+(
+select rownum rn,bno, type, content title, regdate
+from
+(select * from board where writer=#{userid}
+union
+select * from g_board where writer=#{userid})
+<![CDATA[
+where rownum<6)
+where rn>0 order by regdate desc
+]]>	
+</select>
+
+
+<!-- 내가 쓴 게시글 개수 -->
+<select id="getAllboardCount" resultType="int">
+	select count(*)
+	from (select * from board 
+union all
+	select * from g_board
+			)
+	where writer=#{userid} 
+</select>
+
+<!-- 내가 쓴 댓글 개수 -->
+
+
 
 <!-- 회원가입 -->	
 	<insert id="insert">
 		INSERT ALL
-			INTO member(mno, userid, userpw, username, useremail) values(member_sequence.nextval, #{userid}, #{userpw}, #{username}, #{useremail})
+			INTO member(mno, userid, userpw, username, useremail,regdate) values(member_sequence.nextval, #{userid}, #{userpw}, #{username}, #{useremail}, sysdate)
             INTO member_auth(userid, auth) values(#{userid}, 'ROLE_USER')
         SELECT * FROM DUAL       	
 	</insert>
@@ -104,7 +137,7 @@ WHERE mem.userid = #{userid}
 
 <!-- 회원 정보 수정 -->
 <update id="update">
-update member set username = #{username} where userid= #{userid}
+update member set username = #{username}, updatedate = sysdate where userid= #{userid}
 </update>
 
 <!-- 네이버 연동 여부 -->
@@ -117,4 +150,10 @@ update member set username = #{username} where userid= #{userid}
 <update id="updateN">
 update member set naverLogin = #{naverLogin} where useremail=#{useremail}
 </update>
+
+<!-- 회원탈퇴 -->
+<delete id="deleteUser">
+	delete from member where userid=#{userid}
+</delete>
+
 </mapper>

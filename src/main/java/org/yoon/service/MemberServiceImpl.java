@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.yoon.domain.BoardAttachVO;
+import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
 import org.yoon.domain.GBoardVO;
 import org.yoon.domain.MemberAttachVO;
@@ -109,6 +110,24 @@ public class MemberServiceImpl implements MemberService{
 	public int getTotal(Criteria cri) {
 		// TODO Auto-generated method stub
 		return mapper.getTotal(cri);
+	}
+
+	@Override
+	public int delete(String userid) {
+		// TODO Auto-generated method stub
+		return mapper.deleteUser(userid);
+	}
+
+	@Override
+	public List<BoardVO> getAllboard(String userid) {
+		// TODO Auto-generated method stub
+		return mapper.getAllboard(userid);
+	}
+
+	@Override
+	public int getAllboardCount(String userid) {
+		// TODO Auto-generated method stub
+		return mapper.getAllboardCount(userid);
 	}
 
 
