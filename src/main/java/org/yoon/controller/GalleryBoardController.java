@@ -60,6 +60,7 @@ public class GalleryBoardController {
 	
 	
 	//게시글목록 조회
+	
 	@GetMapping("/list")
 	public void list(Model model, Criteria cri) {
 		log.info("=============게시글 목록 조회==============");
@@ -328,14 +329,14 @@ public class GalleryBoardController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/recommend")
 	@ResponseBody
-	public String recommend(@RequestParam("id") String id, @RequestParam("gno") long gno) {
+	public String recommend(@RequestParam("id") String userid, @RequestParam("gno") long gno) {
 		log.info("게시글 추천하기");
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("id", id);
+		HashMap<String,Object > map = new HashMap<>();
+		map.put("userid", userid);
 		map.put("gno", gno);
-		
+		log.info("userid: "+userid +"gno: "+gno);
 		int result = service.checkRecommend(map);
-		
+		log.info(result);
 		//처음 추천하는 경우
 		if(result == 0) {
 			service.recommend(map);	
