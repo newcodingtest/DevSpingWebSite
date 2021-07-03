@@ -33,11 +33,11 @@ public class ReplyController {
 	
 	@PreAuthorize("isAuthenticated()")
 	//댓글등록
-	//consumes, produces >> JSON 방식식의 데이터만 처리하는 속성
+	//consumes: 요청 데이터 타입 제한 produces: 요청 헤더에 반환 데이터 타입 제한
 	//@RequestBody 를 이용하여 JSON 데이터를 ReplyVo 타입으로 변환
 	@PostMapping(value = "/new",
-			consumes = "application/json",
-			produces = {MediaType.TEXT_PLAIN_VALUE})
+			consumes = "application/json", //json 요청만 처리
+			produces = {MediaType.TEXT_PLAIN_VALUE}) ////텍스트 타입만 리턴
 	public ResponseEntity<String> create(@RequestBody ReplyVO vo, Model model){
 		
 		log.info("ReplyVO:  "+vo);
