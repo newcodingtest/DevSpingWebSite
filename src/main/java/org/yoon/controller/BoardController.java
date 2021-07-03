@@ -1,14 +1,16 @@
 package org.yoon.controller;
 
-import java.nio.file.Files;  
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller; 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -105,9 +107,33 @@ public class BoardController {
 	@GetMapping({"/get", "/modify"})
 	public void get(@RequestParam("bno") Long bno,@ModelAttribute("cri") Criteria cri, Model model) {
 		log.info("/get");
-		//조회수 증가
-		service.visit(bno);
 		model.addAttribute("board",service.get(bno));
+		
+		String userId = null;
+		userId = SecurityContextHolder.getContext().getAuthentication().getName();
+		log.info(userId);
+		int result = 0;
+		
+		//1. 로그인한 경우
+		if(!userId.equals("anonymousUser")) {
+			HashMap<String, Object> map = new HashMap<>();
+			
+			map.put("userid", userId);
+			map.put("bno", bno);
+			
+			//아이디와 글번호로 추천여부 조회
+			result = service.checkRecommend(map);
+			
+			//2. 로그인 했는데 추천글이 아닌 경우 & 로그인 안 한 경우
+			if(result == 0) {
+				model.addAttribute("isRecommend", false);
+			}else {
+			//추천글인 경우
+				model.addAttribute("isRecommend", true);
+			}
+			
+			
+		}
 		
 	}
 	
@@ -150,13 +176,29 @@ public class BoardController {
 		return new ResponseEntity<>(service.getAttachList(bno),HttpStatus.OK);
 	}
 	
-	//해당글 좋아요 
-	@PostMapping("/like")
-	@ResponseBody
-	public int like(Long bno){
-		log.info(bno+"좋아요 버튼 클릭");
-		return service.Like(bno);
-	}
+	//게시글 추천
+		@PreAuthorize("isAuthenticated()")
+		@PostMapping("/recommend")
+		@ResponseBody
+		public String recommend(@RequestParam("id") String userid, @RequestParam("bno") long bno,Model model) {
+			log.info("게시글 추천하기");
+			HashMap<String,Object > map = new HashMap<>();
+			map.put("userid", userid);
+			map.put("bno", bno);
+			log.info("userid: "+userid +"gno: "+bno);
+			int result = service.checkRecommend(map);
+			log.info(result);
+			//처음 추천하는 경우
+			if(result == 0) {
+				service.recommend(map);	
+				return "recommend";
+			}
+			//추천하기 취소하는 경우
+			else {
+				service.cancelRecommend(map);
+				return "cancel";
+			}
+		}
 	
 	
 }
