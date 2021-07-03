@@ -88,18 +88,22 @@ WHERE mem.userid = #{userid}
 
 <!-- 내가 쓴 게시글(최신5개) 출력 -->
 <select id="getAllboard" resultType="org.yoon.domain.BoardVO">
-select *
-from
-(
-select rownum rn,bno, type, content title, regdate
-from
-(select * from board where writer=#{userid}
-union
-select * from g_board where writer=#{userid})
-<![CDATA[
-where rownum<6)
-where rn>0 order by regdate desc
-]]>	
+	select rownum rn,b.*
+	from(
+		select *
+		from
+			(select 
+				bno,type,regdate,writer,content,title
+			from board
+		union
+			select
+				gno,g_type,g_regdate,g_writer,g_content,g_title
+			from g_board)a
+			where writer=#{userid} and rownum>0
+			 order by regdate desc)b
+				<![CDATA[
+		where rownum<6
+				]]>	
 </select>
 
 

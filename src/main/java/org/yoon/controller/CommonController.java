@@ -252,10 +252,12 @@ public class CommonController {
 		log.info("===내 활동 기록 확인===");
 		String userid=principal.getName();
 		
-		//내가 쓴 글 리스트 전달
+		//내가 쓴 최근 글 리스트 전달(5개)
 		model.addAttribute("user",service.getAllboard(userid));
 		//내가 쓴글 개수 전달
 		model.addAttribute("cnt",service.getAllboardCount(userid));
+		//내가 쓴 최근 댓글 리스트 전달(5개)
+		 //model.addAttribute("reply",service.getAllreply(userid)); 
 		
 	}
 
