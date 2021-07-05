@@ -1,6 +1,7 @@
 package org.yoon.domain;
 
 import java.util.Date;
+
 import lombok.Data;
 
 @Data
@@ -13,4 +14,5 @@ public class ReplyVO {
 		private Date replyDate; //작성일
 		private Date updateDate; //수정일
 		private char hide;
+		private String type;
 }

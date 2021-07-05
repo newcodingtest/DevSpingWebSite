@@ -6,8 +6,8 @@
 <mapper namespace="org.yoon.mapper.AttachMapper">
 
 	<insert id="insert">
-		insert into attach (uuid, uploadPath, fileName, fileType, bno)
-		values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno})
+		insert into attach (uuid, uploadPath, fileName, fileType, bno, type)
+		values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno}, '자유')
 	</insert>
 	
 	<insert id="insertUser">

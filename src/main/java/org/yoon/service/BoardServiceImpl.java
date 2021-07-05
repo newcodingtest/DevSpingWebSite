@@ -1,5 +1,6 @@
 package org.yoon.service;
 
+import java.util.HashMap; 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-import org.yoon.domain.GBoardVO;
+
 import org.yoon.mapper.AttachMapper;
 import org.yoon.mapper.BoardMapper;
 import org.yoon.mapper.ReplyMapper;
@@ -47,6 +48,8 @@ public class BoardServiceImpl implements BoardService {
 	public BoardVO get(Long bno) {
 
 		log.info("==========글 조회========:    "+ bno);
+		//조회수 증가
+		mapper.visit(bno);
 		return mapper.read(bno);
 	}
 
@@ -112,22 +115,48 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int Like(Long bno) {
-		log.info(bno+"좋아요!");
-		return mapper.like(bno);
-	}
-
-	@Override
-	public List<GBoardVO> getNewList() {
+	public List<BoardVO> getNewList() {
 		log.info("============갤러리게시판 최신글 조회==============");
 		return mapper.getNewList();
 	}
 
 	@Override
-	public List<GBoardVO> getBestList() {
+	public List<BoardVO> getBestList() {
 		log.info("============갤러리게시판 베스트글 조회==================");
 		return mapper.getBestList();
 	}
+
+	@Transactional
+	@Override
+	public void recommend(HashMap map) {
+		log.info("=============게시글 추천하기==============");
+		log.info(map.get(map));
+		//게시글 추천 수 증가
+		mapper.getMoreRecommend(map.get("bno"));
+		
+		//추천아이디 및 글번호 저장
+		mapper.recommend(map);
+	}
+
+	@Override
+	public int checkRecommend(HashMap map) {
+		log.info("=============게시글 추천여부 조회==============");
+		log.info(map);
+		return mapper.checkRecommend(map);
+	}
+
+	@Transactional
+	@Override
+	public void cancelRecommend(HashMap map) {
+		log.info("=============게시글 추천취소==============");
+		//게시글 추천 수 감소
+		mapper.reduceRecommend(map.get("bno"));
+		
+		//추천아이디 및 글번호 삭제
+		mapper.cancelRecommend(map);
+	}
+
+	
 
 
 	

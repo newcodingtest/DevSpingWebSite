@@ -1,14 +1,16 @@
 package org.yoon.service;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.yoon.domain.BoardAttachVO;
+import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-import org.yoon.domain.GBoardAttachVO;
-import org.yoon.domain.GBoardVO;
+
+import org.yoon.mapper.AttachMapper;
 import org.yoon.mapper.GBoardAttachMapper;
 import org.yoon.mapper.GBoardMapper;
 
@@ -25,61 +27,61 @@ public class GBoardServiceImpl implements GBoardService{
 	private GBoardMapper mapper;
 	
 	@Setter(onMethod_= @Autowired)
-	private GBoardAttachMapper gattachMapper;
+	private AttachMapper gattachMapper;
 	
 	@Transactional
 	@Override
-	public void register(GBoardVO gvo) {
+	public void register(BoardVO bno) {
 		log.info("=============게시글 등록==============");
-		 mapper.insertSelectKey(gvo);
+		 mapper.insertSelectKey(bno);
 		 
-		 if(gvo.getAttachList() == null || gvo.getAttachList().size() <= 0) {
+		 if(bno.getAttachList() == null || bno.getAttachList().size() <= 0) {
 			 return;
 		 }
-		 gvo.getAttachList().forEach(attach -> {
-			 attach.setGno(gvo.getGno());
+		 bno.getAttachList().forEach(attach -> {
+			 attach.setBno(bno.getBno());
 			 gattachMapper.insert(attach);
 		 });
 	}
 
 	@Transactional
 	@Override
-	public GBoardVO get(long gno) {
+	public BoardVO get(Long bno) {
 		log.info("=============게시글 상세보기==============");
 		
 		//조회수 올리기===============================================
-		mapper.getMoreVisit(gno);
+		mapper.getMoreVisit(bno);
 		
-		return mapper.read(gno);
+		return mapper.read(bno);
 	}
 
 	@Transactional
 	@Override
-	public boolean modify(GBoardVO gvo) {
+	public int modify(BoardVO board) {
 		log.info("=============게시글 수정==============");
 		
-		gattachMapper.deleteAll(gvo.getGno());
-		boolean modifyResult = mapper.update(gvo) ==1;
-		
-		if(modifyResult && gvo.getAttachList().size()>0) {
-			gvo.getAttachList().forEach(attach -> {
-				attach.setGno(gvo.getGno());
+		gattachMapper.deleteAll(board.getBno());
+		int cnt = mapper.update(board);
+		//1.글 수정이 완료, 2.수정된 글의 파일이 존재시 3. 수정된 글의 파일 크기가 존재시  앞선 3개의 조건이 만족하면 
+		if(cnt!=0 && board.getAttachList()!=null && board.getAttachList().size()>0) {
+			board.getAttachList().forEach(attach -> {
+				attach.setBno(board.getBno());
 				gattachMapper.insert(attach);
 			});
 		}
-		return modifyResult;
+		return cnt;
 	}
 	
 	@Transactional
 	@Override
-	public boolean delete(long gno) {
+	public int delete(Long bno) {
 		log.info("=============게시글 삭제==============");
-		gattachMapper.deleteAll(gno);
-		return mapper.delete(gno)==1;
+		gattachMapper.deleteAll(bno);
+		return mapper.delete(bno);
 	}
 
 	@Override
-	public List<GBoardVO> getList(Criteria cri) {
+	public List<BoardVO> getList(Criteria cri) {
 		log.info("=============게시글 목록 조회==============");
 		return mapper.getListPaging(cri);
 	}
@@ -91,26 +93,28 @@ public class GBoardServiceImpl implements GBoardService{
 	}
 	
 	@Override
-	public List<GBoardAttachVO> getAttachList(Long gno) {
-		log.info("======글번호로 첨부파일 리스트 조회=======:"+gno);
-		return gattachMapper.findBygno(gno);
+	public List<BoardAttachVO> getAttachList(Long bno) {
+		log.info("======글번호로 첨부파일 리스트 조회=======:"+bno);
+		return gattachMapper.findByBno(bno);
 	}
 
 	@Transactional
 	@Override
 	public void recommend(HashMap map) {
 		log.info("=============게시글 추천하기==============");
+		log.info(map.get(map));
 		//게시글 추천 수 증가
-		mapper.getMoreRecommend(map.get("gno"));
+		mapper.getMoreRecomend(map.get("bno"));
 		
 		//추천아이디 및 글번호 저장
-		mapper.recommend(map);
+		mapper.recomend(map);
 	}
 
 	@Override
 	public int checkRecommend(HashMap map) {
 		log.info("=============게시글 추천여부 조회==============");
-		return mapper.checkRecommend(map);
+		log.info(map);
+		return mapper.checkRecomend(map);
 	}
 
 	@Transactional
@@ -118,20 +122,20 @@ public class GBoardServiceImpl implements GBoardService{
 	public void cancelRecommend(HashMap map) {
 		log.info("=============게시글 추천취소==============");
 		//게시글 추천 수 감소
-		mapper.reduceRecommend(map.get("gno"));
+		mapper.reduceRecomend(map.get("bno"));
 		
 		//추천아이디 및 글번호 삭제
-		mapper.cancelRecommend(map);
+		mapper.cancelRecomend(map);
 	}
 
 	@Override
-	public List<GBoardVO> getNewList() {
+	public List<BoardVO> getNewList() {
 		log.info("============갤러리게시판 최신글 조회==============");
 		return mapper.getNewList();
 	}
 
 	@Override
-	public List<GBoardVO> getBestList() {
+	public List<BoardVO> getBestList() {
 		log.info("============갤러리게시판 베스트글 조회==================");
 		return mapper.getBestList();
 	}

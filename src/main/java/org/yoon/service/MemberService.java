@@ -1,12 +1,12 @@
 package org.yoon.service;
 
-import java.util.List;
+import java.util.List; 
 
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-import org.yoon.domain.GBoardVO;
-import org.yoon.domain.MemberAttachVO;
+
+
 import org.yoon.domain.MemberVO;
 
 public interface MemberService {

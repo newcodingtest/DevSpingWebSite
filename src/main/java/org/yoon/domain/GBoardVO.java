@@ -10,14 +10,15 @@ import lombok.Data;
 public class GBoardVO {
 
 	private long gno;
-	private String title;
-	private String content;
-	private String writer;
-	private Date regdate;
-	private Date updatedate;
-	private int replycnt;
-	private int visit;
-	private int recommend;
+	private String g_title;
+	private String g_content;
+	private String g_writer;
+	private Date g_regdate;
+	private Date g_updatedate;
+	private int g_replycnt;
+	private int g_visit;
+	private int g_recommend;
+	private String g_type; //게시판 이름 
 	
 	private List<GBoardAttachVO> attachList;
 }

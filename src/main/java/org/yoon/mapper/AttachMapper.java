@@ -1,16 +1,16 @@
 package org.yoon.mapper;
 
-import java.util.List; 
+import java.util.List;  
 
 import org.yoon.domain.AttachFileDTO;
 import org.yoon.domain.BoardAttachVO;
-import org.yoon.domain.MemberAttachVO;
+
 
 public interface AttachMapper {
 	
 	public void insert(BoardAttachVO vo);
 	
-	public void insertUser(MemberAttachVO vo);
+	public void insertUser(BoardAttachVO vo);
 	
 	public void delete(String uuid);
 	

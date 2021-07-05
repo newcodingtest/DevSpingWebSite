@@ -1,11 +1,12 @@
 package org.yoon.service;
 
+import java.util.HashMap; 
 import java.util.List;
 
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-import org.yoon.domain.GBoardVO;
+
 
 public interface BoardService {
 	
@@ -27,11 +28,15 @@ public interface BoardService {
 	public int visit(Long bno);
 	//해당 글의 첨부파일 가져오기
 	public List<BoardAttachVO>getAttachList(Long bno);
-	//좋아요
-	int Like(Long bno);
 	//최신글 조회
-	public List<GBoardVO> getNewList();
+	public List<BoardVO> getNewList();
 		//베스트글 조회
-	public List<GBoardVO> getBestList();
+	public List<BoardVO> getBestList();
+	//추천하기
+	public void recommend(HashMap map);
+	//추천여부 조회
+	public int checkRecommend(HashMap map);
+	//추천 취소
+	public void cancelRecommend(HashMap map);
 }
 	

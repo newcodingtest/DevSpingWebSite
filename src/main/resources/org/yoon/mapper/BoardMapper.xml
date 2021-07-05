@@ -108,4 +108,49 @@
 	where bno = #{bno}
 </update>
 
+	<!-- 최신글 가져오기 -->
+	<select id="getNewList" resultType="org.yoon.domain.BoardVO">
+		<![CDATA[
+			select * 
+			from( select * from board order by regdate desc ) 
+			where rownum <= 5
+		]]>
+	</select>
+	
+	<!-- 베스트 글 가져오기 -->
+	<select id="getBestList" resultType="org.yoon.domain.BoardVO">
+		<![CDATA[
+			select * 
+			from( select * from board order by recomend desc )
+			where rownum <= 5
+		]]>
+	</select>
+		
+	<!-- 글 추천 -->
+	<insert id="recommend" parameterType="HashMap">
+		insert into 
+		rcm_G_board(userid, bno, rcm_cnt) values(#{userid}, #{bno}, default)
+	</insert>
+	
+	<!-- 게시글 추천 수 증가 -->
+	<update id="getMoreRecommend" >
+		update board set recomend=nvl(recomend, 0)+1 where bno = #{bno}
+	</update>
+
+	<!-- 게시글 추천 수 감소 -->
+	<update id="reduceRecommend" >
+		update board set recomend=nvl(recomend, 0)-1 where bno = #{bno}
+	</update>
+	
+	<!-- 추천여부 조회 -->
+	<select id="checkRecommend" resultType="int" parameterType="HashMap">
+		select count(rcm_cnt) from rcm_g_board where bno = #{bno} and userid = #{userid}
+	</select>
+	
+	<!-- 추천 취소하기 -->
+	<delete id="cancelRecommend" parameterType="HashMap">
+		delete from rcm_g_board where bno = #{bno} and userid = #{userid}
+	</delete>
+	
+
 </mapper>

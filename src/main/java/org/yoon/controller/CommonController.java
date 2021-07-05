@@ -63,7 +63,7 @@ import org.yoon.auth.Naver.NaverLogin;
 import org.yoon.auth.Naver.NaverLoginApi;
 import org.yoon.domain.BoardAttachVO;
 
-import org.yoon.domain.MemberAttachVO;
+
 import org.yoon.domain.MemberVO;
 import org.yoon.domain.ReplyVO;
 import org.yoon.mapper.MemberMapper;
@@ -252,12 +252,10 @@ public class CommonController {
 		log.info("===내 활동 기록 확인===");
 		String userid=principal.getName();
 		
-		//내가 쓴 최근 글 리스트 전달(5개)
+		//내가 쓴 글 리스트 전달
 		model.addAttribute("user",service.getAllboard(userid));
 		//내가 쓴글 개수 전달
 		model.addAttribute("cnt",service.getAllboardCount(userid));
-		//내가 쓴 최근 댓글 리스트 전달(5개)
-		 //model.addAttribute("reply",service.getAllreply(userid)); 
 		
 	}
 

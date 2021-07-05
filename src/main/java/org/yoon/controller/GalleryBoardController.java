@@ -1,6 +1,6 @@
 package org.yoon.controller;
 
-import java.io.File;
+import java.io.File; 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -40,9 +40,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.yoon.domain.BoardAttachVO;
+import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-import org.yoon.domain.GBoardAttachVO;
-import org.yoon.domain.GBoardVO;
 import org.yoon.domain.PageDTO;
 import org.yoon.service.GBoardService;
 
@@ -76,9 +76,9 @@ public class GalleryBoardController {
 	
 	//게시글 상세보기 및 수정페이지
 	@GetMapping({"/get","/modify"})
-	public void get(@RequestParam("gno") Long gno, Model model, @ModelAttribute("cri") Criteria cri ) {
+	public void get(@RequestParam("bno") Long bno, Model model, @ModelAttribute("cri") Criteria cri ) {
 		log.info("=============글 상세보기 및 수정================");
-		model.addAttribute("Gboard",service.get(gno));
+		model.addAttribute("Gboard",service.get(bno));
 		
 		String userId = null;
 		userId = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -90,23 +90,19 @@ public class GalleryBoardController {
 			HashMap<String, Object> map = new HashMap<>();
 			
 			map.put("userid", userId);
-			map.put("gno", gno);
+			map.put("bno", bno);
 			
 			//아이디와 글번호로 추천여부 조회
 			result = service.checkRecommend(map);
 			
 			//2. 로그인 했는데 추천글이 아닌 경우 & 로그인 안 한 경우
 			if(result == 0) {
-				model.addAttribute("isRecommend", false);
+				model.addAttribute("isRecomend", false);
 			}else {
 			//추천글인 경우
-				model.addAttribute("isRecommend", true);
+				model.addAttribute("isRecomend", true);
 			}
-			
-			
 		}
-		
-	
 	}
 	
 	//게시글 등록페이지
@@ -118,7 +114,7 @@ public class GalleryBoardController {
 	//게시글 등록
 	@PostMapping("/register")
 	@PreAuthorize("isAuthenticated()")
-	public String register(GBoardVO vo, RedirectAttributes rttr) {
+	public String register(BoardVO vo, RedirectAttributes rttr) {
 		log.info("===============게시글 등록=================");
 		log.info("register : "+vo);
 		
@@ -129,7 +125,7 @@ public class GalleryBoardController {
 		log.info("=========================================");
 		
 		service.register(vo);
-		rttr.addFlashAttribute("result", vo.getGno());
+		rttr.addFlashAttribute("result", vo.getBno());
 		
 		return "redirect:/Gboard/list";
 	}
@@ -137,10 +133,10 @@ public class GalleryBoardController {
 	//게시글 수정
 	@PreAuthorize("principal.username == #vo.writer")
 	@PostMapping("/modify")
-	public String modify(GBoardVO vo, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+	public String modify(BoardVO vo, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
 		log.info("================게시글 수정===============:"+vo);
 		
-		if(service.modify(vo)) {
+		if(service.modify(vo)==1) {
 			rttr.addFlashAttribute("result","msuccess");
 		}
 		return "redirect:/Gboard/list";
@@ -149,11 +145,11 @@ public class GalleryBoardController {
 	//게시글 삭제
 	@PreAuthorize("principal.username == #writer")
 	@PostMapping("/remove")
-	public String remove(@RequestParam("gno") long gno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
-		log.info("==============게시글 삭제============="+gno);
-		List<GBoardAttachVO> attachList = service.getAttachList(gno);
+	public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr,String writer) {
+		log.info("==============게시글 삭제============="+bno);
+		List<BoardAttachVO> attachList = service.getAttachList(bno);
 		
-		if(service.delete(gno)) {
+		if(service.delete(bno)==1) {
 			deleteFiles(attachList);
 			rttr.addFlashAttribute("result", "dsuccess");
 		}
@@ -174,9 +170,9 @@ public class GalleryBoardController {
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value="/uploadAjaxAction", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<GBoardAttachVO>> uploadAjaxPost(MultipartFile[] uploadFile) {
+	public ResponseEntity<List<BoardAttachVO>> uploadAjaxPost(MultipartFile[] uploadFile) {
 		
-		List<GBoardAttachVO> list = new ArrayList<>();
+		List<BoardAttachVO> list = new ArrayList<>();
 		String uploadFolder = "C:\\upload1";
 
 		String uploadFolderPath = getFolder();
@@ -189,7 +185,7 @@ public class GalleryBoardController {
 		}
 		
 		for(MultipartFile multipartFile: uploadFile) {
-			GBoardAttachVO attachVO = new GBoardAttachVO();
+			BoardAttachVO attachVO = new BoardAttachVO();
 			
 			String uploadFileName = multipartFile.getOriginalFilename();
 			
@@ -300,14 +296,14 @@ public class GalleryBoardController {
 	//글 번호로 첨부파일 목록 조회
 	@GetMapping(value= "/getAttachList", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<GBoardAttachVO>> getAttachList(Long gno){
-		log.info("getAttachList"+gno);
-		return new ResponseEntity<>(service.getAttachList(gno), HttpStatus.OK);
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
+		log.info("getAttachList"+bno);
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
 	}
 	
 	
 	//첨부파일 목록 삭제
-	private void deleteFiles(List<GBoardAttachVO> attachList) {
+	private void deleteFiles(List<BoardAttachVO> attachList) {
 		if(attachList == null || attachList.size() == 0) {
 			return;
 		}
@@ -327,20 +323,20 @@ public class GalleryBoardController {
 	
 	//게시글 추천
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/recommend")
+	@PostMapping("/recomend")
 	@ResponseBody
-	public String recommend(@RequestParam("id") String userid, @RequestParam("gno") long gno) {
+	public String recommend(@RequestParam("id") String userid, @RequestParam("bno") long bno) {
 		log.info("게시글 추천하기");
 		HashMap<String,Object > map = new HashMap<>();
 		map.put("userid", userid);
-		map.put("gno", gno);
-		log.info("userid: "+userid +"gno: "+gno);
+		map.put("bno", bno);
+		log.info("userid: "+userid +"gno: "+bno);
 		int result = service.checkRecommend(map);
 		log.info(result);
 		//처음 추천하는 경우
 		if(result == 0) {
 			service.recommend(map);	
-			return "recommend";
+			return "recomend";
 		}
 		//추천하기 취소하는 경우
 		else {

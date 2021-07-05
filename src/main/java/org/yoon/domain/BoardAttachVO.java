@@ -12,5 +12,6 @@ public class BoardAttachVO {
   
   private Long bno;
   private String userid;
-  
+  private String type; //게시판 타입
+ 
 }

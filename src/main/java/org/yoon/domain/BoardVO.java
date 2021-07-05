@@ -16,6 +16,7 @@ public class BoardVO {
 	private int replycnt;// 댓글 수
 	private int visit; // 방문 수
 	private int recomend; //추천 수
+	private String type; //게시판 이름 
 	
 	private List<BoardAttachVO>attachList;
 	

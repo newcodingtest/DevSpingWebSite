@@ -20,17 +20,17 @@
 	</sql>
 	
 	<!-- 글 페이징 출력 -->
-	<select id="getListPaging" resultType="org.yoon.domain.GBoardVO">
+	<select id="getListPaging" resultType="org.yoon.domain.BoardVO">
 		<![CDATA[
 		select
-			gno, title, content, writer, regdate, updatedate, replycnt, visit, recommend
+			bno, title, content, writer, regdate, updatedate, replycnt, visit, recomend
 		from
 			(
 			select /*+INDEX_DESC(g_board pk_g_board) */
-	        	rownum rn, gno, title, content, writer, regdate, updatedate, replycnt, visit, recommend
+	        	rownum rn, bno, title, content, writer, regdate, updatedate, replycnt, visit, recomend
 	        from
-	        	g_board
-	        where	
+	        	board
+	        where type='갤러리'	and
 			
 		]]>
 		<include refid="criteria"/>
@@ -43,87 +43,87 @@
 
   	<!-- 글등록-->
 	<insert id="insert">
-		insert into G_board (gno, title, content, writer)
-		values (G_board_sequence.nextval, #{title}, #{content}, #{writer})
+		insert into board (bno, title, content, writer,type)
+		values (board_sequence.nextval, #{title}, #{content}, #{writer},'갤러리')
 	</insert>
 	
 	<insert id="insertSelectKey">
-		<selectKey resultType="Long" order="BEFORE" keyProperty="gno">select G_board_sequence.nextval from dual</selectKey>
-		insert into G_board (gno, title, content, writer)
-		values (#{gno}, #{title}, #{content}, #{writer})
+		<selectKey resultType="Long" order="BEFORE" keyProperty="bno">select board_sequence.nextval from dual</selectKey>
+		insert into board (bno, title, content, writer, type)
+		values (#{bno}, #{title}, #{content}, #{writer},'갤러리')
 	</insert>
 	
 	<!-- 조회수 올리기 -->
 	<update id="getMoreVisit">
-		update g_board set visit = nvl(visit, 0)+1 where gno = #{gno}
+		update board set visit = nvl(visit, 0)+1 where bno = #{bno}
 	</update>
 	
 	<!-- 전체 글 숫자 출력 -->
 	<select id="getTotal" resultType="_int">
-		select count(*) from g_board 
-		where gno > 0 
+		select count(*) from board 
+		where bno > 0 and type='갤러리'
 	</select>
 
 	<!-- 글 상세보기-->
-	<select id="read" resultType="org.yoon.domain.GBoardVO">
-		select * from G_board where gno = #{gno}
+	<select id="read" resultType="org.yoon.domain.BoardVO">
+		select * from board where bno = #{bno}
 	</select>
 	
 	<!-- 글 삭제하기 -->
 	<delete id="delete" >
-		delete from g_board where gno = #{gno}
+		delete from board where bno = #{bno}
 	</delete>
 	
 	<!-- 글 수정하기 -->
 	<update id="update">
-		update g_board
+		update board
 	set title = #{title},
 	content = #{content},
 	writer = #{writer},
 	updatedate = sysdate
-	where gno = #{gno}
+	where bno = #{bno}
 	</update>
 	
 	<!-- 글 추천 -->
-	<insert id="recommend" parameterType="hashmap">
+	<insert id="recomend" parameterType="HashMap">
 		insert into 
-		rcm_G_board values(#{userid}, #{gno}, default)
+		rcm_g_board(userid, bno,type, rcm_cnt) values(#{userid}, #{bno},'갤러리', default)
 	</insert>
 	
 	<!-- 게시글 추천 수 증가 -->
-	<update id="getMoreRecommend" >
-		update g_board set recommend=nvl(recommend, 0)+1 where gno = #{gno}
+	<update id="getMoreRecomend" >
+		update board set recomend=nvl(recomend, 0)+1 where bno = #{bno}
 	</update>
 
 	<!-- 게시글 추천 수 감소 -->
-	<update id="reduceRecommend" >
-		update g_board set recommend=nvl(recommend, 0)-1 where gno = #{gno}
+	<update id="reduceRecomend" >
+		update board set recomend=nvl(recomend, 0)-1 where bno = #{bno}
 	</update>
 	
 	<!-- 추천여부 조회 -->
-	<select id="checkRecommend" resultType="_int" parameterType="hashmap">
-		select count(rcm_cnt) from rcm_g_board where gno = #{gno} and userid = #{userid}
+	<select id="checkRecomend" resultType="int" parameterType="HashMap">
+		select count(rcm_cnt) from rcm_g_board where bno = #{bno} and userid = #{userid}
 	</select>
 	
 	<!-- 추천 취소하기 -->
-	<delete id="cancelRecommend" parameterType="hashmap">
-		delete from rcm_g_board where gno = #{gno} and userid = #{userid}
+	<delete id="cancelRecomend" parameterType="HashMap">
+		delete from rcm_g_board where bno = #{bno} and userid = #{userid}
 	</delete>
 	
 	<!-- 최신글 가져오기 -->
-	<select id="getNewList" resultType="org.yoon.domain.GBoardVO">
+	<select id="getNewList" resultType="org.yoon.domain.BoardVO">
 		<![CDATA[
 			select * 
-			from( select * from g_board order by regdate desc ) 
+			from( select * from board where type='갤러리'order by regdate desc ) 
 			where rownum <= 5
 		]]>
 	</select>
 	
 	<!-- 베스트 글 가져오기 -->
-	<select id="getBestList" resultType="org.yoon.domain.GBoardVO">
+	<select id="getBestList" resultType="org.yoon.domain.BoardVO">
 		<![CDATA[
 			select * 
-			from( select * from g_board order by recommend desc )
+			from( select * from board where type='갤러리' order by recomend desc )
 			where rownum <= 5
 		]]>
 	</select>

@@ -1,6 +1,6 @@
 package org.yoon.domain;
 
-import java.util.Date;
+import java.util.Date; 
 import java.util.List;
 
 import lombok.Data;
@@ -19,5 +19,5 @@ public class MemberVO {
 	private Date regDate;
 	private Date updateDate;
 	private List<AuthVO> authList; //유저 권한
-	private List<MemberAttachVO>attachList; //사용자 프로필 사진
+	private List<BoardAttachVO>attachList; //사용자 프로필 사진
 }

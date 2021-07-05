@@ -1,11 +1,12 @@
 package org.yoon.mapper;
 
+import java.util.HashMap; 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-import org.yoon.domain.GBoardVO;
+
 
 public interface BoardMapper {
 	
@@ -29,11 +30,19 @@ public interface BoardMapper {
 	public int visit(Long bno);
 	//댓글수 증가
 	public void updateReplyCnt(@Param("bno") Long bno, @Param("amount") int amount); 
-	//좋아요 증가
-	public int like(Long bno);
+	//게시글 추천
+	public void recommend(HashMap map);
+	//게시글 추천수 증가
+	public int getMoreRecommend(Object bno);
+	//게시글 추천수 감소
+	public int reduceRecommend(Object bno);
+	//추천여부 조회
+	public int checkRecommend(HashMap map);
+	//추천취소하기
+	public void cancelRecommend(HashMap map);
 	//최신글 조회
-		public List<GBoardVO> getNewList();
-			//베스트글 조회
-		public List<GBoardVO> getBestList();
+	public List<BoardVO> getNewList();
+	//베스트글 조회
+	public List<BoardVO> getBestList();
 	
 }

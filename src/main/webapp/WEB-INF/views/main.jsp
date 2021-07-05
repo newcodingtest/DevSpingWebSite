@@ -68,7 +68,7 @@
 /* 		function getAttachImg(arr, type){
 			console.log(type);
 			$.each(arr, function(i, value){
-				$.getJSON("/GBoard/getAttachList", {gno: value}, function(attach){
+				$.getJSON("/GBoard/getAttachList", {bno: value}, function(attach){
 					console.log(attach[0]);
 					var fileCallPath = encodeURIComponent(attach[0].uploadPath+"/"+attach[0].uuid+"_"+attach[0].fileName);
 					$(".item"+(i+1)).attr("src","/Gboard/display?fileName="+fileCallPath);;
@@ -80,12 +80,12 @@
 		//갤러리게시판 최신글이미지 ===========================================================================================
 		var arr1= new Array(); 	
 		<c:forEach items="${gNewList}" var="vo">
-			arr1.push("${vo.gno}");
+			arr1.push("${vo.bno}");
 		</c:forEach>
 		
 		//글번호로 첨부파일 조회 후 첫번째 이미지 불러오기
 		$.each(arr1, function(i, value){
-			$.getJSON("/Gboard/getAttachList", {gno: value}, function(attach){
+			$.getJSON("/Gboard/getAttachList", {bno: value}, function(attach){
 				console.log(attach[0]);
 				if(typeof attach == "undefined" || attach == null || attach == ""){
 					$(".item1"+(i+1)).attr("src","/resources/img/userimage.jpg");
@@ -103,12 +103,12 @@
 		//갤러리게시판 베스트글 ==========================================================================================
 		arr= new Array(); 	
 		<c:forEach items="${gBestList}" var="vo">
-			arr.push("${vo.gno}");
+			arr.push("${vo.bno}");
 		</c:forEach>
 		
 		//글번호로 첨부파일 조회 후 첫번째 이미지 불러오기
 		$.each(arr, function(i, value){
-			$.getJSON("/Gboard/getAttachList", {gno: value}, function(attach){
+			$.getJSON("/Gboard/getAttachList", {bno: value}, function(attach){
 				console.log(attach[0]);
 				if(typeof attach == "undefined" || attach == null || attach == ""){
 					$(".item2"+(i+1)).attr("src","/resources/img/userimage.jpg");
@@ -191,12 +191,12 @@
 	            	<div class="col-lg-4 text-center">
 					<!-- ================================이미지 들어갈 자리====================================== -->
 					<img class="item1${status.count}"/>
-	                  	<a class="title" href="/Gboard/get?gno=${vo.gno}"><c:out value="${vo.title}"/></a>
+	                  	<a class="title" href="/Gboard/get?bno=${vo.bno}"><c:out value="${vo.title}"/></a>
 	                  <span class="writer" align="center"><c:out value="${vo.writer}"/><span><br>
 	                  <span class="regdate">
 	                  	<fmt:formatDate pattern="yyyy-MM-dd" value="${vo.regdate}"/>
 	                  </span>&nbsp;&nbsp;
-	                  <span class="recommend">추천수<c:out value="${vo.recommend}"/></span>
+	                  <span class="recommend">추천수<c:out value="${vo.recomend}"/></span>
 	                </div>
                 <c:if test="${status.count%3==0 || status.last}">
 	            	</div>
@@ -217,12 +217,12 @@
 	            		<div class="col-lg-4 text-center">
 					<!-- ================================이미지 들어갈 자리====================================== -->
 							<img class="item2${status.count}"/>
-	                  	<a class="title" href="/Gboard/get?gno=${vo.gno}"><c:out value="${vo.title}"/></a>
+	                  	<a class="title" href="/Gboard/get?bno=${vo.bno}"><c:out value="${vo.title}"/></a>
 	                  <span class="writer"><c:out value="${vo.writer}"/><span><br>
 	                  <span class="regdate">
 	                  	<fmt:formatDate pattern="yyyy-MM-dd" value="${vo.regdate}"/>
 	                  </span>&nbsp;&nbsp;
-	                  <span class="recommend">추천수<c:out value="${vo.recommend}"/></span>
+	                  <span class="recommend">추천수<c:out value="${vo.recomend}"/></span>
 	                </div>
                 	<c:if test="${status.count%3==0 || status.last }">
 	            		</div>

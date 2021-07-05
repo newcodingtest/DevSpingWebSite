@@ -4,10 +4,16 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="org.yoon.mapper.ReplyMapper">
-	<!-- 댓글 추가 -->
+	<!--자유게시판 댓글 추가 -->
 	<insert id="insert">
-		insert into reply (rno, bno, reply, replayer, hide)
-		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide})
+		insert into reply (rno, bno, reply, replayer, hide, type)
+		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide},'자유')
+	</insert>
+	
+	<!--갤러리 댓글 추가 -->
+	<insert id="insert_Z">
+		insert into reply (rno, bno, reply, replayer, hide, type)
+		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide},'갤러리')
 	</insert>
 	
 	<!-- 댓글조회 -->

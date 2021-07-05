@@ -1,6 +1,6 @@
 package org.yoon.service;
 
-import java.util.List;
+import java.util.List; 
 
 import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Service;
@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-import org.yoon.domain.GBoardVO;
-import org.yoon.domain.MemberAttachVO;
+
+
 import org.yoon.domain.MemberVO;
 import org.yoon.mapper.AttachMapper;
 import org.yoon.mapper.MemberMapper;
