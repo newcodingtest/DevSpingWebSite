@@ -47,10 +47,13 @@
                 </div>
                 <div class="bg_box">
                   <div class="form_box">
-                    <input type="text" class="int" title="아이디" id="user_id" placeholder="아이디">
-                    <input type="text" class="int" title="이름" id="real_name" placeholder="이름">
-                    <input type="text" class="int" title="이메일" id="email" placeholder="이메일">
+                  <form id="actionForm" action="/member/pwFind" method="post">
+                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <input type="text" class="int" title="아이디" name="userid" placeholder="아이디" required="required">
+                    <input type="text" class="int" title="이름" name="username" placeholder="이름" required="required">
+                    <input type="text" class="int" title="이메일" name="useremail" placeholder="이메일" required="required">
                     <button type="button"  id="pw_find" class="btn_blue small btn_wrfull">확인</button>
+                  </form> 
                   </div>
                   <div>
                   	<a href="/member/find/idFind">아이디 찾기</a>
@@ -71,7 +74,43 @@
 
         </article>
       </div>
-      </div>
-  
-
+      </div> 
 <%@ include file="../../includes/footer.jsp"%>
+<script>
+/*입력 이메일 유효성 검사*/
+function mailFormCheck(email){
+	 var form = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+	 return form.test(email);
+}
+
+$(document).ready(function(){
+	var code="";
+	var useremail = $('input[name=useremail]').val();
+
+
+ 	$("#pw_find").on("click",function(e){
+		e.preventDefault();
+		var useremail = $('input[name=useremail]').val();
+		var username = $('input[name=username]').val();
+		var userid = $('input[name=userid]').val();
+		
+		
+		if(mailFormCheck(useremail) == false){
+			alert("올바르지 못한 이메일 형식입니다.");
+			return false;
+		}
+		
+		$("#actionForm").submit();
+		
+		
+	}); 
+	
+});
+</script>
+<c:if test="${param.msg!=null}">
+<script>
+$(document).ready(function(){
+	alert(msg);
+});
+</script>
+</c:if>

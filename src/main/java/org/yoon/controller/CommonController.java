@@ -94,17 +94,151 @@ public class CommonController {
 	private MemberService service;
 	@NonNull
 	private CustomUserDetailsService cusd;
-	// 이메일 인증-
+	// 이메일 인증
 	@NonNull
 	private JavaMailSender mailSender;
 	//네이버
 	@NonNull
 	private NaverLogin naverlogin;
+	//비밀번호 암호화
+	@NonNull
+	private BCryptPasswordEncoder bpwen;
+	
 	private String apiResult = null;
+	
+	//이메일 인증 메서드
+	private String email(String useremail) {
+			
+	log.info("이메일 데이터 전송 확인");
+	log.info("인증번호: " + useremail);
 
-	// 네이버 로그인 성공시 callback호출
-		@RequestMapping(value="/logincallback", method= {RequestMethod.GET,RequestMethod.POST})
-		public String callBack(Model model, @RequestParam String code, @RequestParam String state, HttpSession session, HttpServletRequest request) throws Exception{
+	  // 인증번호 난수생성
+	Random random = new Random();
+	int CheckNum = random.nextInt(888888) + 111111;
+
+	// 인증 요청한 이메일에게 인증번호 보내기
+	String setFrom = "pulpul8282@naver.com";
+	String toMail = useremail;
+	String title = "회원가입 인증 이메일 입니다.";
+	String content = "홈페이지를 방문해주셔서 감사합니다." + "<br><br>" + "인증 번호는" + CheckNum + "입니다." + "<br>"
+			+ "해당 인증번호를 인증번호 확인란에 기입하여 주세요.";
+
+	// 이메일 전송 코드
+	try {
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
+		helper.setFrom(setFrom);
+		helper.setTo(toMail);
+		helper.setSubject(title);
+		helper.setText(content, true);
+		mailSender.send(message);
+
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	String num = Integer.toString(CheckNum);
+	log.info("인증번호: " + num);
+
+	return num;
+	
+	}
+	
+	//비밀번호 찾기 인증 과정을 통과한후 오는 비밀번호 변경
+	@PostMapping("/updatepw")
+	public String updatePw(MemberVO vo,RedirectAttributes rttr) {
+		//입력받은 정보값
+		String inputPw = vo.getUserpw();
+		String userid = vo.getUserid();
+		log.info("비밀번호: "+inputPw);
+		log.info("아이디: "+userid);
+		
+
+		//비밀번호 변경로직 실행
+		MemberVO change = new MemberVO();
+		change.setUserid(userid);
+		change.setUserpw(inputPw);
+		
+		int result=service.updatePw(change);
+		
+		//변경 여부 파악
+		if(result>0) {
+			rttr.addFlashAttribute("msg","비밀번호 변경이 적용되었습니다. 다시 로그인해주세요");
+			return "/member/Login";
+			
+		}else {
+			rttr.addFlashAttribute("error","error");
+			log.info("비밀번호 변경 오류");
+			return "/";
+		}
+	
+	}
+	
+	
+	//이름+이메일로 아이디찾기
+	@GetMapping("/idFind")
+	@ResponseBody
+	public String idFind(MemberVO vo) {
+		//1.입력받은 정보로 존재여부 파악
+			
+			//2.아이디가 없는경우 x 리턴
+			MemberVO findUser=service.existUserId(vo);
+			if(findUser==null) {
+				return "x";
+			}
+			//3.아이디가 있으면 아이디값 리턴
+			String result=findUser.getUserid();
+			return result;
+	
+	}
+	
+	//아이디+이름+이메일로 비밀번호 찾기
+	@PostMapping("/pwFind")
+	public String pwFind(MemberVO vo,Model model) {
+		log.info(vo);
+		//1.입력받은 정보로 존재여부 파악
+		MemberVO findUser=service.existUserId(vo);
+		Map<String, Object> map = new HashMap();
+		map.put("email", vo.getUseremail());
+		map.put("id", vo.getUserid());
+		
+		//2.아이디가 없는경우 x 리턴
+		if(findUser==null) {
+	
+			return "/member/find/pwFind";
+		//3.아이디가 있는 경우	
+		}else {
+			model.addAttribute("user", map);
+			log.info(vo.getUseremail());
+			return "/member/find/pwFindResult";
+		}
+		
+	}
+	
+	//1.비번찾기로 이동
+	@GetMapping("/find/pwFind")
+	public void pwFind() {
+	}
+	//2.비번찾기 이메일 인증 으로 이동
+	@GetMapping("/find/pwFindResult")
+	public void pwFindResult() {
+	}
+	//3.인증이 완료되었으면 비번수정 창으로 이동
+	@PostMapping("/find/pwChange")
+	public void pwChange(MemberVO vo,Model model) {
+		Map<String, Object> map = new HashMap();
+		map.put("email", vo.getUseremail());
+		map.put("id", vo.getUserid());
+		model.addAttribute("user",map);
+	}
+	
+	//아이디찾기로 이동
+	@GetMapping("/find/idFind")
+	public void idFind() {
+	}
+
+	//네이버 로그인 성공시 callback호출
+	@RequestMapping(value="/logincallback", method= {RequestMethod.GET,RequestMethod.POST})
+	public String callBack(Model model, @RequestParam String code, @RequestParam String state, HttpSession session, HttpServletRequest request) throws Exception{
 			OAuth2AccessToken oauthToken;
 			oauthToken = naverlogin.getAccessToken(session, code, state);
 			
@@ -169,7 +303,7 @@ public class CommonController {
 					securityContext.setAuthentication(authentication);
 					session = request.getSession(true);
 					session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-					return "redirect:/board/list";
+					return "/board/list";
 
 			//3.둘다 아니라면 네이버로 가입 된 상태임. 네이버 로그인시 바로 로그인됨
 			}else {
@@ -184,45 +318,19 @@ public class CommonController {
 					securityContext.setAuthentication(authentication);
 					session = request.getSession(true);
 					session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-					return "redirect:/board/list";
+					return "/board/list";
 			}
 		}
 
 	// ajax로 받아온 이메일
-	@GetMapping("/mailCheck")
+	@PostMapping("/mailCheck")
 	@ResponseBody
 	public String mailCheck(String email) {
 		log.info("이메일 데이터 전송 확인");
 		log.info("인증번호: " + email);
-
-		// 인증번호 난수생성
-		Random random = new Random();
-		int CheckNum = random.nextInt(888888) + 111111;
-
-		// 인증 요청한 이메일에게 인증번호 보내기
-		String setFrom = "pulpul8282@naver.com";
-		String toMail = email;
-		String title = "회원가입 인증 이메일 입니다.";
-		String content = "홈페이지를 방문해주셔서 감사합니다." + "<br><br>" + "인증 번호는" + CheckNum + "입니다." + "<br>"
-				+ "해당 인증번호를 인증번호 확인란에 기입하여 주세요.";
-
-		// 이메일 전송 코드
-		try {
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
-			helper.setFrom(setFrom);
-			helper.setTo(toMail);
-			helper.setSubject(title);
-			helper.setText(content, true);
-			mailSender.send(message);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String num = Integer.toString(CheckNum);
-		log.info("인증번호: " + num);
-
-		return num;
+		
+		return email(email);
+	
 	}
 
 	// 프로필 사진 가져오기
@@ -283,13 +391,7 @@ public class CommonController {
 	@GetMapping("Register")
 	public void Register(Model model, HttpSession session) {
 		log.info("회원가입 창으로 이동");
-		/* 네이버아이디로 인증 URL을 생성하기 위하여 naverLoginBO클래스의 getAuthorizationUrl메소드 호출 */
-		//String naverAuthUrl = naverLoginBO.getAuthorizationUrl(session);
-		// https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=sE***************&
-		// redirect_uri=http%3A%2F%2F211.63.89.90%3A8090%2Flogin_project%2Fcallback&state=e68c269c-5ba9-4c31-85da-54c16c658125
-		//log.info("네이버: " + naverAuthUrl);
-		// 네이버
-		//model.addAttribute("url", naverAuthUrl);
+	
 	}
 
 	// 회원 등록
@@ -297,7 +399,7 @@ public class CommonController {
 	public String Register(MemberVO vo, RedirectAttributes rttr) {
 		log.info("회원등록 post");
 		service.insert(vo);	
-
+		rttr.addFlashAttribute("msg","회원가입이 완료되었습니다. 로그인 해주세요");
 		return "redirect:/member/Login";
 	}
 	
@@ -313,9 +415,9 @@ public class CommonController {
 			//탈퇴 메소드 실행시 db내에선 member와 member_auth 두 테이블이 서로 종속관계에 있기때문에 기본키 삭제시 외래키 자동삭제를 넣어줘야함
 			service.delete(userid);
 			SecurityContextHolder.clearContext();
-			rttr.addFlashAttribute("mgs","탈퇴가 완료되었습니다.");
+			rttr.addFlashAttribute("msg","탈퇴가 완료되었습니다.");
 		}else {
-			rttr.addFlashAttribute("mgs","탈퇴에 실패하였습니다..");
+			rttr.addFlashAttribute("msg","탈퇴에 실패하였습니다..");
 		}
 		
 		return "redirect:/board/list";

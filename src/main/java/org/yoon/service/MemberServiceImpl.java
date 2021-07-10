@@ -1,7 +1,8 @@
 package org.yoon.service;
 
-import java.util.List; 
+import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ public class MemberServiceImpl implements MemberService{
 	private MemberMapper mapper;
 	private AttachMapper AttachMapper;
 	
-	private PasswordEncoder pwen;
+	private BCryptPasswordEncoder pwen;
 	@Override
 	public int idCheck(String userid) {
 		
@@ -129,6 +130,27 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return mapper.getAllboardCount(userid);
 	}
+
+	@Override
+	public MemberVO existUserId(MemberVO vo) {
+		// TODO Auto-generated method stub
+		return mapper.existUserId(vo);
+	}
+
+	@Override
+	public MemberVO existUserPw(MemberVO vo) {
+		// TODO Auto-generated method stub
+		return mapper.existUserPw(vo);
+	}
+
+	@Override
+	public int updatePw(MemberVO vo) {
+		String pwd=pwen.encode(vo.getUserpw());
+		vo.setUserpw(pwd);
+		return mapper.updatePw(vo);
+	}
+
+
 
 
 

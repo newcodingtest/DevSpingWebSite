@@ -37,4 +37,12 @@ public interface MemberService {
 	public List<BoardVO> getAllboard(String userid);
 	//내가 쓴 글 개수 출력
 	public int getAllboardCount(String userid);
+	//이름+이메일로 아이디 찾기
+	public MemberVO existUserId(MemberVO vo);
+	//아이디+이름+이메일로 비밀번호 찾기
+	public MemberVO existUserPw(MemberVO vo);
+	//회원 비밀번호 변경
+	public int updatePw(MemberVO vo);
+	
+	
 }

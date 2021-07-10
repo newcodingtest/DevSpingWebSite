@@ -119,6 +119,25 @@ union all
 
 <!-- 내가 쓴 댓글 개수 -->
 
+<!-- 이름으로 아이디 존재 확인 -->
+<select id="readName" resultType="org.yoon.domain.MemberVO">
+	 select * from member where username=#{username}
+</select>
+
+<!-- 이메일로 아이디 존재 확인 -->
+<select id="readEmail" resultType="org.yoon.domain.MemberVO">
+	select * from member where useremail=#{useremail}
+</select>
+
+<!-- 이름+이메일로 아이디 존재 확인 -->
+<select id="existUserId" resultType="org.yoon.domain.MemberVO">
+	select * from member where useremail=#{useremail} and username=#{username}
+</select>
+
+<!-- 아이디+이름+이메일로 비밀번호 확인 -->
+<select id="existUserPw" resultType="org.yoon.domain.MemberVO">
+	select * from member where useremail=#{useremail} and username=#{username} and userid=#{#userid}
+</select>
 
 
 <!-- 회원가입 -->	
@@ -138,6 +157,10 @@ union all
         SELECT * FROM DUAL       	
 	</insert>	
 	
+<!-- 회원 비밀번호 변경 -->
+<update id="updatePw">
+update member set userpw = #{userpw} where userid = #{userid}
+</update>
 
 <!-- 회원 정보 수정 -->
 <update id="update">

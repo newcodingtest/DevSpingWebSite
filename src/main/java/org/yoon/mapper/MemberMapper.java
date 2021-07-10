@@ -36,4 +36,10 @@ public interface MemberMapper {
 	public int getAllboardCount(String userid);
 	//내가 쓴 댓글 개수 출력
 	public int getAllReplyCount(String userid);
+	//이름+이메일로 아이디 존재 확인
+	public MemberVO existUserId(MemberVO vo);
+	//아이디+이름+이메일로 아이디 존재 확인
+	public MemberVO existUserPw(MemberVO vo);
+	//회원 비밀번호 변경
+	public int updatePw(MemberVO vo);
 }

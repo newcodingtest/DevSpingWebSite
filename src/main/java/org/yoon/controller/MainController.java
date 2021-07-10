@@ -34,5 +34,8 @@ public class MainController {
 	}
 	@GetMapping("/test")
 	public void test() {}
+	
+	@GetMapping("/chart")
+	public void chart() {}
 
 }

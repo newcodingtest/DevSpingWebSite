@@ -44,7 +44,7 @@
 			<div class="col-md-4 col-md-offset-4">
 				<div class="login-panel panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">Please Sign In</h3>
+						<h3 class="panel-title">Sign In</h3>
 					</div>
 					<div class="panel-body">
 						<form role="form" id="form" method='post' action="/login">
@@ -62,25 +62,31 @@
 										Me
 									</label>
 										<label> <a href="/member/Register">회원가입</a>
-										
+										<label> <a href="/member/find/idFind">ID/PW 찾기</a>
 									</label>
 								</div>
 								<!-- Change this to a button or input when using this as a form -->
+								<div>
 								<a href="index.html" class="btn btn-lg btn-success btn-block">로그인</a>
-								<!-- <span id="google_login" class="circle google" onclick="init();"> <i class="fa fa-google-plus fa-fw"></i> </span>  -->
-								<div id="naver_id_login" style="text-align:center">			
-								<a href="${naverUrl}"><img width="223" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/></a>
 								</div>
+							
+								<!-- <span id="google_login" class="circle google" onclick="init();"> <i class="fa fa-google-plus fa-fw"></i> </span>  -->
+								
 							</fieldset>
+						
 							<input type="hidden" name="${_csrf.parameterName}"
 								value="${_csrf.token}" />
 						</form>
 						
-						
-					
-
 					</div>
 				</div>
+					<div id="naver_id_login" style="text-align:center">			
+					 <a href="${naverUrl}"><img width="223" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/></a>
+					 <br><br>
+					 <a href="/board/list" class="btn btn-info">로그인 없이 홈페이지이동</a>
+					</div>
+					
+					
 			</div>
 		</div>
 	</div>
@@ -129,14 +135,8 @@ var csrfTokenValue = "${_csrf.token}";
       });
       </script>
 </c:if> 
-<c:if test="${param.error != null}">
-      <script>
-      $(document).ready(function(){
-      	alert("로그인 에러 발생!! 계정을 확인해주세요");
-      });
-      </script>
-</c:if> 
-<c:if test="${msg != null}">
+
+<c:if test="${param.msg != null}">
       <script>
       $(document).ready(function(){
       	alert(msg);
