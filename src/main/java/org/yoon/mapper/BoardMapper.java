@@ -1,11 +1,12 @@
 package org.yoon.mapper;
 
-import java.util.HashMap; 
+import java.util.HashMap;  
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
+import org.yoon.domain.ReplyVO;
 
 
 public interface BoardMapper {
@@ -44,5 +45,14 @@ public interface BoardMapper {
 	public List<BoardVO> getNewList();
 	//베스트글 조회
 	public List<BoardVO> getBestList();
+
+	//내가 쓴 글(자유,갤러리) 가져오기
+		public List<BoardVO> getNewboard(String userid);
+		//내가 쓴 글(자유,갤러리) 가져오기
+		public List<ReplyVO> getNewReply(String userid);
+		//내가 쓴 글 개수 출력
+		public int getAllboardCount(String userid);
+		//내가 쓴 댓글 개수 출력
+		public int getAllReplyCount(String userid);
 	
 }

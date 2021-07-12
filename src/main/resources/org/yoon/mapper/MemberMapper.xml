@@ -35,6 +35,7 @@
     <result property="auth" column="auth"/>
   </resultMap>
   
+
   <select id="read" resultMap="memberMap">
 SELECT 
   mem.userid,  userpw, username, useremail, enabled, regdate, updatedate, auth
@@ -86,38 +87,7 @@ WHERE mem.userid = #{userid}
 	]]>	
 </select>
 
-<!-- 내가 쓴 게시글(최신5개) 출력 -->
-<select id="getAllboard" resultType="org.yoon.domain.BoardVO">
-	select rownum rn,b.*
-	from(
-		select *
-		from
-			(select 
-				bno,type,regdate,writer,content,title
-			from board
-		union
-			select
-				gno,g_type,g_regdate,g_writer,g_content,g_title
-			from g_board)a
-			where writer=#{userid} and rownum>0
-			 order by regdate desc)b
-				<![CDATA[
-		where rownum<6
-				]]>	
-</select>
 
-
-<!-- 내가 쓴 게시글 개수 -->
-<select id="getAllboardCount" resultType="int">
-	select count(*)
-	from (select * from board 
-union all
-	select * from g_board
-			)
-	where writer=#{userid} 
-</select>
-
-<!-- 내가 쓴 댓글 개수 -->
 
 <!-- 이름으로 아이디 존재 확인 -->
 <select id="readName" resultType="org.yoon.domain.MemberVO">

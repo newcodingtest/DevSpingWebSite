@@ -6,6 +6,7 @@ import java.util.List;
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
+import org.yoon.domain.ReplyVO;
 
 
 public interface BoardService {
@@ -38,5 +39,13 @@ public interface BoardService {
 	public int checkRecommend(HashMap map);
 	//추천 취소
 	public void cancelRecommend(HashMap map);
+	//내가 쓴 글(자유,갤러리) 가져오기
+	public List<BoardVO> getNewboard(String userid);
+		//내가 쓴 글(자유,갤러리) 가져오기
+	public List<ReplyVO> getNewReply(String userid);
+		//내가 쓴 글 개수 출력
+	public int getAllboardCount(String userid);
+		//내가 쓴 댓글 개수 출력
+	public int getAllReplyCount(String userid);
 }
 	

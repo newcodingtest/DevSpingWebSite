@@ -19,6 +19,93 @@
 	</trim>
 </sql>
 
+   <resultMap type="org.yoon.domain.BoardVO" id="boardMap">
+    <id property="bno" column="bno"/>
+    <result property="title" column="title"/>
+    <result property="type" column="type"/>
+    <collection property="replyList" resultMap="replyMap">
+    </collection> 
+  </resultMap>
+  
+  <resultMap type="org.yoon.domain.ReplyVO" id="replyMap">
+    <result property="bno" column="bno"/>
+    <result property="reply" column="reply"/>
+    <result property="replayer" column="replayer"/>
+    <result property="replyDate" column="replyDate"/>
+  </resultMap>
+   
+  <!-- 내가 쓴 게시글(최신5개) 출력->운영 테이블 2개 적용시 -->
+<!-- <select id="getAllboard" resultType="org.yoon.domain.BoardVO">
+	select rownum rn,b.*
+	from(
+		select *
+		from
+			(select 
+				bno,type,regdate,writer,content,title
+			from board
+		union
+			select
+				gno,g_type,g_regdate,g_writer,g_content,g_title
+			from g_board)a
+			where writer=#{userid} and rownum>0
+			 order by regdate desc)b
+				<![CDATA[
+		where rownum<6
+				]]>	
+</select> -->
+
+
+
+<!-- 내가 쓴 게시글(최신5개) 출력 -> 운영 테이블 1개로 통합시 -->
+ <select id="getNewboard" resultType="org.yoon.domain.BoardVO">
+      select
+		 bno, title, content, regDate, type
+	from
+	 (
+	 select /* +INDEX_DESC(board pk_board) */
+	 		rownum rn, bno, title, content,  regDate, type
+	 from 
+	   	 board 
+	 where writer = #{userid} order by regdate desc
+		)
+		<![CDATA[
+	where rownum < 6
+		]]>
+</select>
+
+<!-- 내가 쓴 게시글 개수 ->운영 테이블 2개 적용시 -->
+<!-- <select id="getAllboardCount" resultType="int">
+	select count(*)
+	from (select * from board 
+union all
+	select * from g_board
+			)
+	where writer=#{userid} 
+</select>
+ -->
+ 
+ <!-- 내가 쓴 최신 댓글(5개) 출력 -->
+ <select id="getNewReply" resultType="org.yoon.domain.ReplyVO">
+select replayer, reply, replydate, bno, title, type from
+(SELECT 
+    rownum r,replayer, reply, replydate, r.bno, b.title, b.type 
+FROM 
+ reply r  LEFT OUTER JOIN board b on r.bno = b.bno 
+WHERE r.replayer = #{userid} order by replydate desc) where<![CDATA[ rownum<6]]>
+</select> 
+
+
+ 
+ <!-- 내가 쓴 게시글 개수 -> -->
+<select id="getAllboardCount" resultType="int">
+ select count(*) from board where writer = #{userid}
+</select>
+
+ <!-- 내가 쓴 댓글 개수 -> -->
+<select id="getAllReplyCount" resultType="int">
+ select count(*) from Reply where replayer = #{userid}
+</select>
+
 
 <!-- 글 페이징 출력 -->
 <select id="getListPaging" resultType="org.yoon.domain.BoardVO">
@@ -31,7 +118,7 @@
         	rownum rn, bno, title, content, writer, regdate, updatedate, replycnt, visit, recomend
         from
         	board
-        where	
+        where type='자유' and	
 		
 	]]>
 	<include refid="criteria"/>
@@ -112,7 +199,7 @@
 	<select id="getNewList" resultType="org.yoon.domain.BoardVO">
 		<![CDATA[
 			select * 
-			from( select * from board order by regdate desc ) 
+			from( select * from board where type='자유' order by regdate desc ) 
 			where rownum <= 5
 		]]>
 	</select>

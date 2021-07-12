@@ -104,7 +104,7 @@ public class BoardController {
 	}
 	
 	//글 조회 페이지로 이동
-	@GetMapping({"/get", "/modify"})
+	@GetMapping({"/get", "/modify", "/test"})
 	public void get(@RequestParam("bno") Long bno,@ModelAttribute("cri") Criteria cri, Model model) {
 		log.info("/get");
 		model.addAttribute("board",service.get(bno));

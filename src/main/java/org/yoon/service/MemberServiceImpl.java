@@ -119,17 +119,7 @@ public class MemberServiceImpl implements MemberService{
 		return mapper.deleteUser(userid);
 	}
 
-	@Override
-	public List<BoardVO> getAllboard(String userid) {
-		// TODO Auto-generated method stub
-		return mapper.getAllboard(userid);
-	}
-
-	@Override
-	public int getAllboardCount(String userid) {
-		// TODO Auto-generated method stub
-		return mapper.getAllboardCount(userid);
-	}
+	
 
 	@Override
 	public MemberVO existUserId(MemberVO vo) {
@@ -149,6 +139,9 @@ public class MemberServiceImpl implements MemberService{
 		vo.setUserpw(pwd);
 		return mapper.updatePw(vo);
 	}
+
+
+
 
 
 

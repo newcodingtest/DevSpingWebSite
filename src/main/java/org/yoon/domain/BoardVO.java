@@ -18,6 +18,8 @@ public class BoardVO {
 	private int recomend; //추천 수
 	private String type; //게시판 이름 
 	
+	private List<ReplyVO>replyList;//댓글 리스트
+	
 	private List<BoardAttachVO>attachList;
 	
 	

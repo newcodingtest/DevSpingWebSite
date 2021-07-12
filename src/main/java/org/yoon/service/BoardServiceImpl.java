@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
 import org.yoon.domain.Criteria;
-
+import org.yoon.domain.ReplyVO;
 import org.yoon.mapper.AttachMapper;
 import org.yoon.mapper.BoardMapper;
 import org.yoon.mapper.ReplyMapper;
@@ -154,6 +154,30 @@ public class BoardServiceImpl implements BoardService {
 		
 		//추천아이디 및 글번호 삭제
 		mapper.cancelRecommend(map);
+	}
+
+	@Override
+	public List<BoardVO> getNewboard(String userid) {
+		// TODO Auto-generated method stub
+		return mapper.getNewboard(userid);
+	}
+
+	@Override
+	public List<ReplyVO> getNewReply(String userid) {
+		// TODO Auto-generated method stub
+		return mapper.getNewReply(userid);
+	}
+
+	@Override
+	public int getAllboardCount(String userid) {
+		// TODO Auto-generated method stub
+		return mapper.getAllboardCount(userid);
+	}
+
+	@Override
+	public int getAllReplyCount(String userid) {
+		// TODO Auto-generated method stub
+		return mapper.getAllReplyCount(userid);
 	}
 
 	
