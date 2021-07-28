@@ -44,7 +44,7 @@ public class GBoardServiceImpl implements GBoardService{
 		 });
 	}
 
-	@Transactional
+	
 	@Override
 	public BoardVO get(Long bno) {
 		log.info("=============게시글 상세보기==============");
