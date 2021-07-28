@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ include file="../includes/header.jsp"%>
- 
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <style>
   .register-btn,.postList{
@@ -18,13 +18,13 @@
 		
 		//배열에 글번호 리스트 추가
 		<c:forEach items="${list}" var="item">
-			arr.push("${item.gno}");
+			arr.push("${item.bno}");
 			arr1.push("${item.writer}");
 		</c:forEach>
 		
 		//글번호로 첨부파일 조회 후 첫번째 이미지 불러오기
 		$.each(arr, function(i, value){
-			$.getJSON("/Gboard/getAttachList", {gno: value}, function(attach){
+			$.getJSON("/Gboard/getAttachList", {bno: value}, function(attach){
 				console.log(attach[0]);
 				if(typeof attach == "undefined" || attach == null || attach == ""){
 				$(".thumbnail"+(i+1)+" .thumbnail-img").attr("src","/resources/img/userimage.jpg");
@@ -54,7 +54,6 @@
 						});
 					}
 			});//end function
-		
 	});
 	});
 </script>	
@@ -113,12 +112,12 @@
 			  </c:if>
 			        <div class="col-lg-3">
 			          <div class="thumbnail${status.count}">
-			            <a class="move" href="<c:out value="${Gboard.gno}" />" >
+			            <a class="move" href="<c:out value="${Gboard.bno}" />" >
 			             <img class="thumbnail-img"  alt="이미지" style="width:100%;height:300px;">
 			            </a>
 			              <div class="caption">
 			                <p>
-			                  <a class="move" href="<c:out value="${Gboard.gno}" />" >
+			                  <a class="move" href="<c:out value="${Gboard.bno}" />" >
 			                 	<c:out value="${Gboard.title}" /> 
 			                  </a>
 			                </p>
@@ -126,7 +125,7 @@
 			                  <img class="userimage${status.count}" style="width:30px;height:30px;"/> 
 			                  <span id="userid"><c:out value="${Gboard.writer}"/></span> 
 			                  <button type="button" class="btn btn-default btn-sm">
-			                    <span class="glyphicon glyphicon-thumbs-up"></span> 추천수 <c:out value="${Gboard.recommend}"/> 
+			                    <span class="glyphicon glyphicon-thumbs-up"></span> 추천수 <c:out value="${Gboard.recomend}"/> 
 			                  </button> 
 			              </div>
 			          </div>
@@ -196,7 +195,7 @@
 		
 	$(".move").on("click",function(e){
 		e.preventDefault();
-		actionForm.append("<input type='hidden' name='gno' value='"+$(this).attr("href")+"'>");
+		actionForm.append("<input type='hidden' name='bno' value='"+$(this).attr("href")+"'>");
 		actionForm.attr("method","get");
 		actionForm.attr("action", "/Gboard/get").submit();
 		

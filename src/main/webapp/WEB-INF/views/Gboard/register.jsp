@@ -186,7 +186,7 @@
       <div class="form-group">
         <br>
         <div class="col-sm-offset-1">
-          <textarea class="form-control" rows="20" id="comment" name="content" placeholder="내용을 입력해주세요." required></textarea>
+          <textarea  rows="20" name="content" placeholder="내용을 입력해주세요." required></textarea>
         </div>
       </div>
        
