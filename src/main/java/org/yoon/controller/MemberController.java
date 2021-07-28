@@ -1,6 +1,6 @@
 package org.yoon.controller;
 
-import java.io.IOException;  
+import java.io.IOException;   
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,12 +65,13 @@ import org.yoon.auth.Naver.NaverLoginApi;
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.Criteria;
 import org.yoon.domain.MemberVO;
+import org.yoon.domain.PageDTO;
 import org.yoon.domain.ReplyVO;
 import org.yoon.mapper.MemberMapper;
-import org.yoon.security.CustomUserDetailsService;
-import org.yoon.security.domain.CustomUser;
+import org.yoon.security.RealUserDetailsService;
 import org.yoon.service.BoardService;
 import org.yoon.service.MemberService;
+import org.yoon.service.ReplyService;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -94,10 +96,14 @@ public class MemberController {
 	@NonNull
 	private BoardService bservice;
 	@NonNull
-	private CustomUserDetailsService cusd;
+	private ReplyService rservice;
+	@NonNull
+	private RealUserDetailsService cusd;
 	// 이메일 인증
 	@NonNull
 	private JavaMailSender mailSender;
+	@Value("#{property['useremail']}")
+	private String website_Email;
 	//네이버
 	@NonNull
 	private NaverLogin naverlogin;
@@ -112,13 +118,14 @@ public class MemberController {
 			
 	log.info("이메일 데이터 전송 확인");
 	log.info("인증번호: " + useremail);
-
+	log.info(website_Email);
+	
 	  // 인증번호 난수생성
 	Random random = new Random();
 	int CheckNum = random.nextInt(888888) + 111111;
 
 	// 인증 요청한 이메일에게 인증번호 보내기
-	String setFrom = "pulpul8282@naver.com";
+	String setFrom = website_Email;
 	String toMail = useremail;
 	String title = "회원가입 인증 이메일 입니다.";
 	String content = "홈페이지를 방문해주셔서 감사합니다." + "<br><br>" + "인증 번호는" + CheckNum + "입니다." + "<br>"
@@ -145,17 +152,47 @@ public class MemberController {
 	}
 	
 	//마이프로필 내가 쓴 글 리스트
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/boardAll")
-	public void boardAll(Criteria cri, Model model) {
+	public void boardAll(Criteria cri, Model model, Principal principal) {
 		log.info("내가 쓴 글 리스트");
-	
+		log.info(cri.getPageNum());
+		log.info(cri.getAmount());
+		//유저아이디, 페이징 넘기기
+		Map<String, Object>map =new HashMap();
+		map.put("userid", principal.getName());
+		map.put("pageNum",cri.getPageNum());
+		map.put("amount",cri.getAmount());
+		
+		
+		//글 리스트
+		model.addAttribute("board",bservice.getListByUser(map));
+		//페이징 번호 정보
+		model.addAttribute("pageMaker",new PageDTO(cri, bservice.getTotalByUser(principal.getName())));
+		
 	}
 	
-	//마이프로필 내가 쓴 댓글 리스트
+	//마이프로필 내가 쓴 글 리스트
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/replyAll")
-	public void replyAll() {
+	public void replyAll(Criteria cri, Model model, Principal principal) {
 		log.info("내가 쓴 댓글 리스트");
+		log.info(cri.getPageNum());
+		log.info(cri.getAmount());
+		//유저아이디, 페이징 넘기기
+		Map<String, Object>map =new HashMap();
+		map.put("userid", principal.getName());
+		map.put("pageNum",cri.getPageNum());
+		map.put("amount",cri.getAmount());
+		
+		//글 리스트
+		model.addAttribute("reply",rservice.getListByUser(cri,principal.getName()));
+		//페이징 번호 정보
+		model.addAttribute("pageMaker",new PageDTO(cri, rservice.getTotalByUser(principal.getName())));
+		
 	}
+	
+
 	
 	//비밀번호 찾기 인증 과정을 통과한후 오는 비밀번호 변경
 	@PostMapping("/updatepw")
@@ -186,7 +223,6 @@ public class MemberController {
 		}
 	
 	}
-	
 	
 	//이름+이메일로 아이디찾기
 	@GetMapping("/idFind")
@@ -317,7 +353,7 @@ public class MemberController {
 					securityContext.setAuthentication(authentication);
 					session = request.getSession(true);
 					session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-					return "/board/list";
+					return "redirect:/board/list";
 
 			//3.둘다 아니라면 네이버로 가입 된 상태임. 네이버 로그인시 바로 로그인됨
 			}else {
@@ -332,12 +368,12 @@ public class MemberController {
 					securityContext.setAuthentication(authentication);
 					session = request.getSession(true);
 					session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-					return "/board/list";
+					return "redirect:/board/list";
 			}
 		}
 
 	// ajax로 받아온 이메일
-	@PostMapping("/mailCheck")
+	@GetMapping("/mailCheck")
 	@ResponseBody
 	public String mailCheck(String email) {
 		log.info("이메일 데이터 전송 확인");
@@ -422,6 +458,7 @@ public class MemberController {
 	}
 	
 	//회원 탈퇴
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete")
 	public String memDelete(Principal principal,RedirectAttributes rttr ) {
 		//로그인 중인 사용자 아이디 가져오기
@@ -431,6 +468,7 @@ public class MemberController {
 		//아이디가 존재하면
 		if(vo!=null) {
 			//탈퇴 메소드 실행시 db내에선 member와 member_auth 두 테이블이 서로 종속관계에 있기때문에 기본키 삭제시 외래키 자동삭제를 넣어줘야함
+			
 			service.delete(userid);
 			SecurityContextHolder.clearContext();
 			rttr.addFlashAttribute("msg","탈퇴가 완료되었습니다.");
@@ -467,7 +505,10 @@ public class MemberController {
 	@GetMapping("/idCheckService")
 	@ResponseBody
 	public int idCheck(@RequestParam("userid") String id) {
+		log.info(id);
 		int result = service.idCheck(id);
+		
+		//아이디가 존재하면
 		if (result == 1) {
 			return 1;
 		} else {
@@ -493,4 +534,30 @@ public class MemberController {
 	public String accessDenied(){
 	    return "err/deniedPage";
 	}
+	
+	//내가 쓴 글 삭제
+	@PostMapping("/deleteMyBoard")
+	@ResponseBody
+	public String deleteMyBoard(Long bno) {
+		int result=bservice.remove(bno);
+	
+		if(result>0) {
+			return "success";
+		}else {
+			return "false";
+		}
+	}
+	
+	//내가 쓴 댓글 삭제
+		@PostMapping("/deleteMyReply")
+		@ResponseBody
+		public String deleteMyReply(Long rno) {
+			int result=rservice.remove(rno);
+		
+			if(result>0) {
+				return "success";
+			}else {
+				return "false";
+			}
+		}
 }
