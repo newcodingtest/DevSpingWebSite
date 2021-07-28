@@ -1,0 +1,32 @@
+package org.yoon.security;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+
+import lombok.extern.log4j.Log4j;
+
+@Log4j
+//접근권한이 부여되지 않은 사용자가 접근하였을경우 
+//ex) 세션이 만료된 사용자가 홈페이지의 로그인 권한을 필요로 하는 페이지에 접근하였을 경우
+public class RealAccessDeniedHandler implements AccessDeniedHandler  {
+	
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+			AccessDeniedException ad) throws IOException, ServletException {
+	
+				request.setAttribute("msg", "정보가 없습니다. 회원가입 후 이용해주세요");
+			
+				log.error("Access Denied Handler");
+		
+		response.sendRedirect("/err/denied-page");
+	}
+
+}
