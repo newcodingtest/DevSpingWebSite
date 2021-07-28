@@ -60,7 +60,7 @@
   <div class="col-lg-12">
     <div class="panel panel-default">
 
-      <div class="panel-heading">글 쓰기 페이지</div>
+      <div class="panel-heading">자유게시판</div>
       <!-- /.panel-heading -->
       <div class="panel-body">
 <!--form=================================================================== -->      
@@ -68,17 +68,17 @@
       	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
       	
         <div class="form-group">
-          <label>Title</label> <input class="form-control" name='title'>
+          <label>제목</label> <input class="form-control" name='title' required>
              
         </div>
 
         <div class="form-group">
-          <label>Text area</label>
-          <textarea class="summernote" style="width: 100%; height:412px;" class="form-control" rows="3" name='content'></textarea>
+          <label>내용</label>
+          <textarea style="width: 100%; height:412px;" class="form-control" rows="3" name='content' required></textarea>
         </div>
 <!--sec 로그인된 사용자이름 자동 작성=================================================================== -->
         <div class="form-group">
-          <label>Writer</label> <input class="form-control" name='writer' value='<sec:authentication property="principal.username"/>' readonly="readonly">
+          <label>작성자</label> <input class="form-control" name='writer' value='<sec:authentication property="principal.username"/>' readonly="readonly">
         </div>
 	</form>        
         <button type="submit" class="update">글 등록</button>

@@ -166,30 +166,13 @@ $("#regBtn").on("click", function(e){
 	
 	'<sec:authorize access="isAnonymous()">'
 	alert("로그인후 가능합니다.");
-	self.location="/member/customLogin";
+	self.location="/member/Login";
 	'</sec:authorize>'
 });
 
 
-//[OO번의 글이 등록 되었습니다.] 알람 창 =====================================
+
 $(document).ready(function(){
-	var result = '<c:out value="${result}"/>';
-	
-	checkModal(result);
-	
-	//뒤로가기 중복 알람 방지 + history.state
-	history.replaceState({},null,null);
-	
-    function checkModal(result){
-		if(result === '' || history.state){
-			return;
-		}
-		if(parseInt(result)>0){
-			$(".modal-body").html("게시글" + parseInt(result)+ "번이 등록되었습니다.");
-		}
-		$("#myModal").modal("show");
-	}
-    
 //페이지 번호 누르면 이동 ==============================================
     $(".paginate_button a").on("click", function(e){
     	e.preventDefault();
@@ -223,4 +206,10 @@ $(document).ready(function(){
 	
 });
 </script>
-
+<c:if test="${param.msg !=null}">
+   	 <script>
+   	 $(document).ready(function(){
+   		 alert(msg);
+   	 }); 	
+     </script>
+	</c:if>
