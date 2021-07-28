@@ -2,6 +2,7 @@ package org.yoon.service;
 
 import java.util.HashMap; 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,10 +57,7 @@ public class BoardServiceImpl implements BoardService {
 	@Transactional
 	@Override
 	public int remove(Long bno) {
-		//파일 같이 삭제
-		AttachMapper.deleteAll(bno);
-		
-		//
+		//글 삭제시-파일-댓글 종속삭제됨(오라클)
 		return mapper.delete(bno);
 	}
 
@@ -158,26 +156,38 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public List<BoardVO> getNewboard(String userid) {
-		// TODO Auto-generated method stub
+		log.info("=============게시판 최신글 출력==============");
 		return mapper.getNewboard(userid);
 	}
 
 	@Override
 	public List<ReplyVO> getNewReply(String userid) {
-		// TODO Auto-generated method stub
+		log.info("=============최신 댓글 출력==============");
 		return mapper.getNewReply(userid);
 	}
 
 	@Override
 	public int getAllboardCount(String userid) {
-		// TODO Auto-generated method stub
+		log.info("=============모든 게시글 수 출력==============");
 		return mapper.getAllboardCount(userid);
 	}
 
 	@Override
 	public int getAllReplyCount(String userid) {
-		// TODO Auto-generated method stub
+		log.info("=============모든 댓글 수 출력==============");
 		return mapper.getAllReplyCount(userid);
+	}
+
+	@Override
+	public List<BoardVO> getListByUser(Map<String,Object> map) {
+		log.info("=============내가 쓴 게시글 출력==============");
+		return mapper.getListByUser(map);
+	}
+
+	@Override
+	public int getTotalByUser(String userid) {
+		log.info("=============내가 쓴 게시글 개수 출력==============");
+		return mapper.getTotalByUser(userid);
 	}
 
 	

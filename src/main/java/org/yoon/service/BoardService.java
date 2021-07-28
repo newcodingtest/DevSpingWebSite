@@ -2,6 +2,7 @@ package org.yoon.service;
 
 import java.util.HashMap; 
 import java.util.List;
+import java.util.Map;
 
 import org.yoon.domain.BoardAttachVO;
 import org.yoon.domain.BoardVO;
@@ -21,10 +22,14 @@ public interface BoardService {
 	public int modify(BoardVO board);
 	//글 리스트 출력+페이징 적용
 	public List<BoardVO> getList(Criteria cri);
+	//내가쓴 글 출력
+	public List<BoardVO> getListByUser(Map<String, Object> map);
 //	//페이징에 따른 글 출력
 //	public List<BoardVO> getListPaging(Criteria cri);
 	//페이징에 쓰일 글 전체 개수
 	public int getTotal(Criteria cri);
+	//페이징에 쓰일 유저 가 쓴 전체 개수
+	public int getTotalByUser(String userid);
 	//조회수
 	public int visit(Long bno);
 	//해당 글의 첨부파일 가져오기
