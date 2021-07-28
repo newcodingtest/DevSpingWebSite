@@ -42,4 +42,10 @@
   
  * 관리자페이지 
    - 사이트 회원 정보 확인
+  
+ # 3.구조도
+   * 클래스 설계도
+  https://github.com/newcodingtest/DevSpingWebSite/blob/develop/%ED%81%B4%EB%9E%98%EC%8A%A4%20%EA%B5%AC%EC%A1%B0%EB%8F%84.png
+   * DB 설계도
+  ![image](https://user-images.githubusercontent.com/57785267/127409459-bca53d12-766c-48d2-9e13-2125dff0e4e0.png)
 
