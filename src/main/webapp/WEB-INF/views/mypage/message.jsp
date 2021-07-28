@@ -145,7 +145,7 @@ var csrfTokenValue = "${_csrf.token}";
 	<div class="jumbotron text-center">
 		<h2>My 쪽지함</h2>
 	</div>
-	<!-- 기본 선택: 받은 쪽지함 // 보낸쪽지함 선택시 보낸 쪽지리스트 호출 ============================================================================-->
+	<!-- 기본 선택: 받은 쪽지함=R // 보낸쪽지함=S 선택시 보낸 쪽지리스트 호출 ============================================================================-->
 	<input type="radio" name="type" onclick='location.href="/message/list?type=R";' ${type=='R'?"checked":""}/>받은쪽지함 &nbsp;&nbsp;&nbsp;
 	<input type="radio" name="type" onclick='location.href="/message/list?type=S";' ${type=='S'?"checked":""}/>보낸쪽지함
 	<br><br>
@@ -194,7 +194,7 @@ var csrfTokenValue = "${_csrf.token}";
  			<c:forEach var="ms" varStatus="status" items="${sentList}"> 
  				<tr>
 					<td>&nbsp;&nbsp;<input type="checkbox" name="RowCheck" value="${ms.mno}"></td> 
-					<td><a data-toggle="modal" data-target="#myModal" 
+					<td><a data-toggle="modal" data-target="#" 
 					data-type="S" data-receiver="${ms.receiver}" data-read="${ms.readYN}" data-mno="${ms.mno}" data-content="${ms.content}">
 					${ms.content }</a></td>
 					<td>${ms.receiver}</td>
