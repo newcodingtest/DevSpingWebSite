@@ -1,11 +1,14 @@
 package org.yoon.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller; 
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,7 +68,22 @@ public class BoardController {
 		}); //End forEach
 	}//End deleteFiles
 	
-	
+	//섬네일 이미지 데이터 전송
+	@GetMapping("/display")
+	@ResponseBody
+	public ResponseEntity<byte[]> getFile(String fileName){
+		
+		File file = new File("C:\\upload1\\"+fileName);
+		ResponseEntity<byte[]> result = null;
+		try {
+			HttpHeaders header = new HttpHeaders();
+			header.add("Content-Type",Files.probeContentType(file.toPath()));
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),header,HttpStatus.OK);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	
 	//글 리스트 출력
 	@GetMapping("/list")
@@ -104,7 +123,7 @@ public class BoardController {
 	}
 	
 	//글 조회 페이지로 이동
-	@GetMapping({"/get", "/modify", "/test"})
+	@GetMapping({"/get", "/modify"})
 	public void get(@RequestParam("bno") Long bno,@ModelAttribute("cri") Criteria cri, Model model) {
 		log.info("/get");
 		model.addAttribute("board",service.get(bno));
