@@ -33,8 +33,6 @@ public interface MemberService {
 	public MemberVO naverChk(MemberVO vo);
 	//네이버 연동 컬럼수정
 	public int updateN(MemberVO vo);
-
-	
 	//이름+이메일로 아이디 찾기
 	public MemberVO existUserId(MemberVO vo);
 	//아이디+이름+이메일로 비밀번호 찾기

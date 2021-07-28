@@ -13,7 +13,10 @@ import org.yoon.domain.Criteria;
 
 import org.yoon.domain.MemberVO;
 import org.yoon.mapper.AttachMapper;
+import org.yoon.mapper.BoardMapper;
 import org.yoon.mapper.MemberMapper;
+import org.yoon.mapper.MessageMapper;
+import org.yoon.mapper.ReplyMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -25,6 +28,8 @@ public class MemberServiceImpl implements MemberService{
 
 	private MemberMapper mapper;
 	private AttachMapper AttachMapper;
+	private BoardMapper bMapper;
+    private MessageMapper mMapper;
 	
 	private BCryptPasswordEncoder pwen;
 	@Override
@@ -85,56 +90,60 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public MemberVO naverChk(MemberVO vo) {
-		// TODO Auto-generated method stub
+		log.info("====네이버 연동 여부 확인======");
 		return mapper.naverChk(vo);
 	}
 
 	@Override
 	public int updateN(MemberVO vo) {
-		// TODO Auto-generated method stub
+		log.info("====기존회원 네이버 연동 추가======");
 		return mapper.updateN(vo);
 	}
 
 	@Override
 	public int emailCheck(String useremail) {
-		// TODO Auto-generated method stub
+		log.info("====이메일 확인======");
 		return mapper.emailCheck(useremail);
 	}
 
 	@Override
 	public List<MemberVO> getList(Criteria cri) {
-		// TODO Auto-generated method stub
+		log.info("====회원 리스트 출력======");
 		return mapper.getListPaging(cri);
 	}
 
 	@Override
 	public int getTotal(Criteria cri) {
-		// TODO Auto-generated method stub
+		log.info("====전체 회원 숫자 출력======");
 		return mapper.getTotal(cri);
 	}
 
 	@Override
 	public int delete(String userid) {
-		// TODO Auto-generated method stub
+		log.info("====회원 삭제======");
+		//회원 프로필 삭제
+		AttachMapper.deleteUser(userid);
+		//회원 글 삭제=>오라클 종속제거 걸어둠->글 삭제시 포함된 댓글 삭제됨
+		bMapper.deleteByUser(userid);
+	
 		return mapper.deleteUser(userid);
 	}
 
-	
-
 	@Override
 	public MemberVO existUserId(MemberVO vo) {
-		// TODO Auto-generated method stub
+		log.info("====회원 아이디 찾기======");
 		return mapper.existUserId(vo);
 	}
 
 	@Override
 	public MemberVO existUserPw(MemberVO vo) {
-		// TODO Auto-generated method stub
+		log.info("====회원 비밀번호 찾기======");
 		return mapper.existUserPw(vo);
 	}
 
 	@Override
 	public int updatePw(MemberVO vo) {
+		log.info("====회원 비밀번호 수정======");
 		String pwd=pwen.encode(vo.getUserpw());
 		vo.setUserpw(pwd);
 		return mapper.updatePw(vo);
