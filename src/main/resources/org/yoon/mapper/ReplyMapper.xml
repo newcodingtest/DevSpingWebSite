@@ -6,14 +6,14 @@
 <mapper namespace="org.yoon.mapper.ReplyMapper">
 	<!--자유게시판 댓글 추가 -->
 	<insert id="insert">
-		insert into reply (rno, bno, reply, replayer, hide)
-		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide})
+		insert into reply (rno, bno, reply, replayer, hide, type)
+		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide}, '자유')
 	</insert>
 	
 	<!--갤러리 댓글 추가 -->
 	<insert id="insert_Z">
-		insert into reply (rno, bno, reply, replayer, hide, )
-		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide})
+		insert into reply (rno, bno, reply, replayer, hide, type)
+		values (seq_reply.nextval, #{bno}, #{reply}, #{replayer}, #{hide}, '자유')
 	</insert>
 	
 	<!-- 댓글조회 -->
@@ -39,13 +39,18 @@
 		delete from reply where rno = #{rno}
 	</delete>
 	
+	<!-- 게시글번호에 따른 댓글삭제 -->
+	<delete id="deleteBno">
+		delete from reply where bno = #{bno}
+	</delete>
+	
 	<!-- 댓글 페이징 처리 -->
 	<select id="getListPaging" resultType="org.yoon.domain.ReplyVO">
 	<![CDATA[
 		select rno, bno, reply, replayer, replydate, updatedate, hide
 		from
 		(
-		  select /*+INDEX_DESC(reply idx_reply)*/
+		  select /*+INDEX_ASC(reply idx_reply)*/
 		    rownum rn, rno, bno, reply, replayer, replydate, updatedate, hide
 		  from reply
 		  where bno = #{bno} 
@@ -55,9 +60,50 @@
 	]]>
 	</select>
 	
+		<!-- 내가 쓴 댓글 페이징 처리 -->
+	<select id="getListByUser" resultType="org.yoon.domain.ReplyVO">
+	<![CDATA[
+		select rno, bno, reply, replayer, replydate, updatedate, hide
+		from
+		(
+		  select /*+INDEX_ASC(reply idx_reply)*/
+		    rownum rn, rno, bno, reply, replayer, replydate, updatedate, hide
+		  from reply
+		  where replayer = #{userid} 
+		  and rno > 0
+		  and rownum <= #{cri.pageNum} * #{cri.amount}
+		) where rn> (#{cri.pageNum}-1) * #{cri.amount}
+	]]>
+	</select>
+	
+<!-- 계층형 댓글처리(대댓글) ->프론트앤드 지식 부족으로 인한 미구현 백단으로는 구현된 상태 -->	
+<!-- 	      
+	select rno, bno, reply, replayer, replydate, updatedate, hide, groupno, parent, deep
+		from
+		(
+		  select
+		    rownum rn, rno, bno, reply, replayer, replydate, updatedate, hide, groupno, parent, deep
+		  from (
+            select rno, bno, reply, replayer, replydate, updatedate, hide, groupno, parent, deep
+            from reply 
+            start with parent =0 connect by prior rno = parent
+            order siblings by rno asc, groupno asc ) r
+		  where bno =#{bno} 
+		  and rownum < #{cri.pageNum} * #{cri.amount}
+		) where rn> (#{cri.pageNum}-1) * #{cri.amount}
+-->
+		
+		
+	
 	<select id="getCountByBno" resultType="int">
 	<![CDATA[
 		select count(rno) from reply where bno = #{rno}
 	]]>
 	</select>
+	
+	<select id="getTotalByUser" resultType="int">
+		select count(*) from reply where replayer = #{userid}
+	</select>
+	
+	
 </mapper>

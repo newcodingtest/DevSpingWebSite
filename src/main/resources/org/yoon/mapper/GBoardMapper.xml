@@ -87,7 +87,7 @@
 	<!-- 글 추천 -->
 	<insert id="recomend" parameterType="HashMap">
 		insert into 
-		rcm_g_board(userid, bno,type, rcm_cnt) values(#{userid}, #{bno},'갤러리', default)
+		rcm_g_board(userid, bno, rcm_cnt) values(#{userid}, #{bno}, default)
 	</insert>
 	
 	<!-- 게시글 추천 수 증가 -->

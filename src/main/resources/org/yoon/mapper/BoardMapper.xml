@@ -5,7 +5,7 @@
   
 <mapper namespace="org.yoon.mapper.BoardMapper">
 <!-- 검색 조건 -->
-<sql id="criteria">
+<sql id="search">
 	<trim prefixOverrides="OR" prefix="(" suffix=") AND">
 		<foreach collection="typeArr" item="type">
 			<trim prefix="OR">
@@ -62,7 +62,7 @@
 		 bno, title, content, regDate, type
 	from
 	 (
-	 select /* +INDEX_DESC(board pk_board) */
+	 select 
 	 		rownum rn, bno, title, content,  regDate, type
 	 from 
 	   	 board 
@@ -121,13 +121,35 @@ WHERE r.replayer = #{userid} order by replydate desc) where<![CDATA[ rownum<6]]>
         where type='자유' and	
 		
 	]]>
-	<include refid="criteria"/>
+	<include refid="search"/>
 	<![CDATA[
 		rownum <= #{pageNum} * #{amount}
 		)
 	where rn > (#{pageNum} -1 )* #{amount}	
 	]]>
 </select>
+
+<!-- 회원이 쓴 글 출력 -->
+<select id="getListByUser" resultType="org.yoon.domain.BoardVO" parameterType="map">
+	<![CDATA[
+	select
+		bno, title, content, writer, regdate, updatedate, replycnt,visit,recomend,type
+	from
+		(
+		select /*+INDEX_DESC(board pk_board) */
+        	rownum rn, bno, title, content, writer, regdate, updatedate, replycnt, visit, recomend,type
+        from
+        	board
+        where writer= #{userid} and	
+		
+	]]>
+	<![CDATA[
+		rownum <= #{pageNum} * #{amount}
+		)
+	where rn > (#{pageNum} -1 )* #{amount}	
+	]]>
+</select>
+
 
 <!-- 단순 출력 -->
 <select id="getList" resultType="org.yoon.domain.BoardVO">
@@ -160,6 +182,12 @@ WHERE r.replayer = #{userid} order by replydate desc) where<![CDATA[ rownum<6]]>
 	delete from board where bno = #{bno}
 </delete>
 
+
+<!-- 아이디로 글 삭제 -->
+<delete id="deleteByUser">
+	delete from board where writer = #{userid}
+</delete>
+
 <!-- 글 수정 -->
 <update id="update">
 	update board
@@ -176,6 +204,12 @@ WHERE r.replayer = #{userid} order by replydate desc) where<![CDATA[ rownum<6]]>
 	where bno > 0 
 </select>
 
+<!-- 해당 유저가 쓴 글 출력 -->
+<select id="getTotalByUser" resultType="int">
+	select count(*) from board 
+	where writer = #{userid}
+</select>
+
 <!-- 조회수 증가 -->
 <update id="visit">
 	update board set
@@ -188,12 +222,6 @@ WHERE r.replayer = #{userid} order by replydate desc) where<![CDATA[ rownum<6]]>
 	update board set replycnt = replycnt + #{amount} where bno = #{bno}
 </update>
 
-<!-- 좋아요 기능 -->
-<update id="like">
-	update board set
-	recomend = recomend+1
-	where bno = #{bno}
-</update>
 
 	<!-- 최신글 가져오기 -->
 	<select id="getNewList" resultType="org.yoon.domain.BoardVO">
@@ -208,7 +236,7 @@ WHERE r.replayer = #{userid} order by replydate desc) where<![CDATA[ rownum<6]]>
 	<select id="getBestList" resultType="org.yoon.domain.BoardVO">
 		<![CDATA[
 			select * 
-			from( select * from board order by recomend desc )
+			from( select * from board where type='자유' order by recomend desc )
 			where rownum <= 5
 		]]>
 	</select>

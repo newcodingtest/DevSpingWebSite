@@ -23,6 +23,7 @@
     <result property="userid" column="userid"/>
     <result property="userpw" column="userpw"/>
     <result property="username" column="username"/>
+    <result property="introduce" column="introduce"/>
     <result property="useremail" column="useremail"/>
     <result property="regDate" column="regdate"/>
     <result property="updateDate" column="updatedate"/>
@@ -38,7 +39,7 @@
 
   <select id="read" resultMap="memberMap">
 SELECT 
-  mem.userid,  userpw, username, useremail, enabled, regdate, updatedate, auth
+  mem.userid,  userpw, username, useremail, introduce, enabled, regdate, updatedate, auth
 FROM 
   member mem LEFT OUTER JOIN member_auth auth on mem.userid = auth.userid 
 WHERE mem.userid = #{userid} 
@@ -134,7 +135,7 @@ update member set userpw = #{userpw} where userid = #{userid}
 
 <!-- 회원 정보 수정 -->
 <update id="update">
-update member set username = #{username}, updatedate = sysdate where userid= #{userid}
+update member set username = #{username}, introduce = #{introduce},  updatedate = sysdate where userid= #{userid}
 </update>
 
 <!-- 네이버 연동 여부 -->
