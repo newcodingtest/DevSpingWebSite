@@ -1,6 +1,7 @@
 package org.yoon.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,25 @@ public class ReplyServiceImpl implements ReplyService{
 		log.info("reply getList:  "+ bno);
 		return new ReplyPageDTO(mapper.getCountByBno(bno),mapper.getListPaging(cri, bno));
 	}
-	
+
+	@Override
+	public int deleteBno(Long bno) {
+		log.info("해당 댓글 삭제 :  "+ bno);
+		return mapper.deleteBno(bno);
+	}
+
+	@Override
+	public int getTotalByUser(String userid) {
+		log.info("내가 쓴 댓글 가져오기 :  "+ userid);
+		return mapper.getTotalByUser(userid);
+	}
+
+	@Override
+	public List<ReplyVO> getListByUser(Criteria cri, String userid) {
+		log.info("내가 쓴 댓글 페이징 :  "+ userid);
+		return mapper.getListByUser(cri, userid);
+	}
+
 	
 	
 }
