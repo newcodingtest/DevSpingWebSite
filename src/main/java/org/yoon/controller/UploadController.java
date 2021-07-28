@@ -112,8 +112,9 @@ public class UploadController {
 	 * }//End uploadFormPost
 	 */
 
+	//항상 로그인 된 상태에서만 가용
+	//파일 업로드
 	@PreAuthorize("isAuthenticated()")
-	// 첨부파일 여러개 등록
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
