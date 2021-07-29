@@ -43,6 +43,9 @@
  * 관리자페이지 
    - 사이트 회원 정보 확인
   
+  * 시연영상
+  https://www.youtube.com/watch?v=iahEgZYWmok&ab_channel=civilizationonline
+  
  # 3.구조도
    * 클래스 설계도<BR>
   ![image](https://user-images.githubusercontent.com/57785267/127409557-a57ca596-365e-4624-92b8-6deecfa4c721.png)
